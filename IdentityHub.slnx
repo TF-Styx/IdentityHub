@@ -3,7 +3,12 @@
   <Folder Name="/src/" />
   <Folder Name="/src/services/" />
   <Folder Name="/src/services/Auth/" />
-  <Folder Name="/src/services/Identity/" />
+  <Folder Name="/src/services/Identity/">
+    <Project Path="src/services/Identity/IdentityHub.IdentityService.Api/IdentityHub.IdentityService.Api.csproj" />
+    <Project Path="src/services/Identity/IdentityHub.IdentityService.Application/IdentityHub.IdentityService.Application.csproj" />
+    <Project Path="src/services/Identity/IdentityHub.IdentityService.Domain/IdentityHub.IdentityService.Domain.csproj" />
+    <Project Path="src/services/Identity/IdentityHub.IdentityService.Infrastructure/IdentityHub.IdentityService.Infrastructure.csproj" />
+  </Folder>
   <Folder Name="/src/shared/" />
   <Folder Name="/src/shared/core/">
     <Project Path="src/shared/core/Shared.Kernel/Shared.Kernel.csproj" />
