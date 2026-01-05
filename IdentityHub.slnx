@@ -1,1 +1,12 @@
-<Solution />
+<Solution>
+  <Folder Name="/deployment/" />
+  <Folder Name="/src/" />
+  <Folder Name="/src/services/" />
+  <Folder Name="/src/services/Auth/" />
+  <Folder Name="/src/services/Identity/" />
+  <Folder Name="/src/shared/" />
+  <Folder Name="/src/shared/core/">
+    <Project Path="src/shared/core/Shared.Kernel/Shared.Kernel.csproj" />
+  </Folder>
+  <Folder Name="/src/shared/security/" />
+</Solution>
