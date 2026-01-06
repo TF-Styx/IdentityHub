@@ -34,18 +34,16 @@ namespace IdentityHub.IdentityService.Domain.Models
             DateRegistration = DateTime.UtcNow;
         }
 
-        public static Result<User> Create(Guid id, string userName, string hashPassword, string clientSalt, string encryptedDek, string mail)
+        public static Result<User> Create(string userName, string hashPassword, string clientSalt, string encryptedDek, string mail)
         {
-            var userIdResult = UserId.Create(id);
             var userNameResult = UserName.Create(userName);
             var hashResult = HashPassword.Create(hashPassword);
             var mailResult = Mail.Create(mail);
 
-            if (userIdResult.IsFailure || userNameResult.IsFailure || hashResult.IsFailure || mailResult.IsFailure)
+            if (userNameResult.IsFailure || hashResult.IsFailure || mailResult.IsFailure)
             {
                 var errors = new List<Error>();
 
-                errors.AddRange(userIdResult.Errors);
                 errors.AddRange(userNameResult.Errors);
                 errors.AddRange(hashResult.Errors);
                 errors.AddRange(mailResult.Errors);
@@ -55,7 +53,7 @@ namespace IdentityHub.IdentityService.Domain.Models
 
             var user = new User
                 (
-                    userIdResult.Value,
+                    UserId.New(),
                     userNameResult.Value,
                     hashResult.Value,
                     clientSalt,
