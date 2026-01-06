@@ -19,10 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <ProjectReference Include="..\..\..\shared\common\Shared.Contracts\Shared.Contracts.csproj" />
     <ProjectReference Include="..\IdentityHub.IdentityService.Application\IdentityHub.IdentityService.Application.csproj" />
     <ProjectReference Include="..\IdentityHub.IdentityService.Infrastructure\IdentityHub.IdentityService.Infrastructure.csproj" />
   </ItemGroup>
