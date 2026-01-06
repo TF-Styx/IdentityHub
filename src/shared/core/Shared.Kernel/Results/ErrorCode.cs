@@ -12,5 +12,7 @@
         Conflict = 7,
         Save = 8,
         Unauthorized = 9,
+        Validation = 10,
+        ValueObject = 11
     }
 }
