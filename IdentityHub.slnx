@@ -10,8 +10,13 @@
     <Project Path="src/services/Identity/IdentityHub.IdentityService.Infrastructure/IdentityHub.IdentityService.Infrastructure.csproj" />
   </Folder>
   <Folder Name="/src/shared/" />
+  <Folder Name="/src/shared/common/">
+    <Project Path="src/shared/common/Shared.Contracts/Shared.Contracts.csproj" Id="bb9d833c-58c3-47fe-9582-41cfd3a5562e" />
+  </Folder>
   <Folder Name="/src/shared/core/">
     <Project Path="src/shared/core/Shared.Kernel/Shared.Kernel.csproj" />
   </Folder>
-  <Folder Name="/src/shared/security/" />
+  <Folder Name="/src/shared/security/">
+    <Project Path="src/shared/security/Shared.Security/Shared.Security.csproj" Id="243ea27a-8fdb-4f11-9177-d35b15c6a9b1" />
+  </Folder>
 </Solution>
