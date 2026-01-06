@@ -11,6 +11,8 @@ namespace IdentityHub.IdentityService.Domain.Models
         public Login Login { get; private set; }
         public UserName UserName { get; private set; }
         public HashPassword HashPassword { get; private set; }
+        public string ClientSalt { get; private set; } = null!;
+        public string EncryptedDek { get; private set; } = null!;
         public Mail Mail { get; private set; }
         public DateTime DateRegistration { get; private set; }
         public DateTime? DateEntry { get; private set; }
@@ -22,15 +24,17 @@ namespace IdentityHub.IdentityService.Domain.Models
         public IReadOnlyCollection<RoleId> RoleIds => _roleIds.AsReadOnly();
 
         private User() { }
-        private User(UserId id, UserName userName, HashPassword hashPassword, Mail mail) : base(id)
+        private User(UserId id, UserName userName, HashPassword hashPassword, string clientSalt, string encryptedDek, Mail mail) : base(id)
         {
             UserName = userName;
             HashPassword = hashPassword;
+            ClientSalt = clientSalt;
+            EncryptedDek = encryptedDek;
             Mail = mail;
             DateRegistration = DateTime.UtcNow;
         }
 
-        public static Result<User> Create(Guid id, string userName, string hashPassword, string mail)
+        public static Result<User> Create(Guid id, string userName, string hashPassword, string clientSalt, string encryptedDek, string mail)
         {
             var userIdResult = UserId.Create(id);
             var userNameResult = UserName.Create(userName);
@@ -54,6 +58,8 @@ namespace IdentityHub.IdentityService.Domain.Models
                     userIdResult.Value,
                     userNameResult.Value,
                     hashResult.Value,
+                    clientSalt,
+                    encryptedDek,
                     mailResult.Value
                 );
 

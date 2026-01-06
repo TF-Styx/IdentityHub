@@ -35,6 +35,12 @@ namespace IdentityHub.IdentityService.Infrastructure.Persistence.Configurations
                 .HasColumnName("HashPassword")
                 .HasConversion(hashPassword => hashPassword.Value, dbValue => HashPassword.Create(dbValue).Value);
 
+            builder.Property(s => s.ClientSalt)
+                .HasColumnName("ClientSalt");
+
+            builder.Property(s => s.EncryptedDek)
+                .HasColumnName("EncryptedDek");
+
             builder.Property(s => s.Mail)
                 .HasColumnName("Mail")
                 .UseCollation(PostgresConstants.COLLATION_NAME)
