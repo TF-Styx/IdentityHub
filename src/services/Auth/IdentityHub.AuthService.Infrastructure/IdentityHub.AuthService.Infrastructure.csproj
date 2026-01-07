@@ -15,4 +15,12 @@
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Persistence\Migrations\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\IdentityHub.AuthService.Domain\IdentityHub.AuthService.Domain.csproj" />
+  </ItemGroup>
+
 </Project>
