@@ -1,4 +1,7 @@
-﻿using IdentityHub.IdentityService.Domain.ValueObjects.Role;
+﻿using IdentityHub.IdentityService.Domain.Enums;
+using IdentityHub.IdentityService.Domain.ValueObjects.AuthMethod;
+using IdentityHub.IdentityService.Domain.ValueObjects.Role;
+using IdentityHub.IdentityService.Domain.ValueObjects.SecureData;
 using IdentityHub.IdentityService.Domain.ValueObjects.Status;
 using IdentityHub.IdentityService.Domain.ValueObjects.User;
 using Shared.Kernel.Primitives;
@@ -10,10 +13,8 @@ namespace IdentityHub.IdentityService.Domain.Models
     {
         public Login Login { get; private set; }
         public UserName UserName { get; private set; }
-        public HashPassword HashPassword { get; private set; }
-        public string ClientSalt { get; private set; } = null!;
-        public string EncryptedDek { get; private set; } = null!;
-        public Mail Mail { get; private set; }
+        public Email Email { get; private set; }
+        public NumberPhone? NumberPhone { get; private set; }
         public DateTime DateRegistration { get; private set; }
         public DateTime? DateEntry { get; private set; }
         public DateTime DateUpdate { get; private set; }
@@ -23,29 +24,34 @@ namespace IdentityHub.IdentityService.Domain.Models
         private readonly List<RoleId> _roleIds = [];
         public IReadOnlyCollection<RoleId> RoleIds => _roleIds.AsReadOnly();
 
+        private readonly List<AuthMethod> _authMethods = [];
+        public IReadOnlyCollection<AuthMethod> AuthMethods => _authMethods.AsReadOnly();
+
+        private readonly List<SecureData> _secureDatas = [];
+        public IReadOnlyCollection<SecureData> SecureDatas => _secureDatas.AsReadOnly();
+
         private User() { }
-        private User(UserId id, UserName userName, HashPassword hashPassword, string clientSalt, string encryptedDek, Mail mail) : base(id)
+        private User(UserId id, Login login, UserName userName, Email mail) : base(id)
         {
+            Login = login;
             UserName = userName;
-            HashPassword = hashPassword;
-            ClientSalt = clientSalt;
-            EncryptedDek = encryptedDek;
-            Mail = mail;
+            Email = mail;
             DateRegistration = DateTime.UtcNow;
+            StatusId = StatusId.Create(Guid.Parse("f47ac10b-58cc-4372-a567-0e02b2c3d479")).Value;
         }
 
-        public static Result<User> Create(string userName, string hashPassword, string clientSalt, string encryptedDek, string mail)
+        public static Result<User> Create(string login, string userName, string mail)
         {
+            var loginResult = Login.Create(login);
             var userNameResult = UserName.Create(userName);
-            var hashResult = HashPassword.Create(hashPassword);
-            var mailResult = Mail.Create(mail);
+            var mailResult = Email.Create(mail);
 
-            if (userNameResult.IsFailure || hashResult.IsFailure || mailResult.IsFailure)
+            if (loginResult.IsFailure || userNameResult.IsFailure || mailResult.IsFailure)
             {
                 var errors = new List<Error>();
 
+                errors.AddRange(loginResult.Errors);
                 errors.AddRange(userNameResult.Errors);
-                errors.AddRange(hashResult.Errors);
                 errors.AddRange(mailResult.Errors);
 
                 return Result<User>.Failure(errors);
@@ -54,27 +60,15 @@ namespace IdentityHub.IdentityService.Domain.Models
             var user = new User
                 (
                     UserId.New(),
+                    loginResult.Value,
                     userNameResult.Value,
-                    hashResult.Value,
-                    clientSalt,
-                    encryptedDek,
                     mailResult.Value
                 );
 
             return Result<User>.Success(user);
         }
 
-        public void AddRole(RoleId roleId)
-        {
-            if (!_roleIds.Contains(roleId))
-                _roleIds.Add(roleId);
-        }
-
-        public void RemoveRole(RoleId roleId)
-        {
-            _roleIds.Remove(roleId);
-            UpdateDate();
-        }
+        #region User
 
         public void ChangeStatus(StatusId statusId)
         {
@@ -88,15 +82,9 @@ namespace IdentityHub.IdentityService.Domain.Models
             UpdateDate();
         }
 
-        public void ChangeHashPassword(HashPassword hashPassword)
+        public void ChangeMail(Email mail)
         {
-            HashPassword = hashPassword;
-            UpdateDate();
-        }
-
-        public void ChangeMail(Mail mail)
-        {
-            Mail = mail;
+            Email = mail;
             UpdateDate();
         }
 
@@ -105,5 +93,79 @@ namespace IdentityHub.IdentityService.Domain.Models
 
         private void UpdateDate()
             => DateUpdate = DateTime.UtcNow;
+
+        #endregion
+
+        #region Role
+
+        public void AddRole(RoleId roleId)
+        {
+            if (!_roleIds.Contains(roleId))
+                _roleIds.Add(roleId);
+        }
+
+        public void RemoveRole(RoleId roleId)
+        {
+            _roleIds.Remove(roleId);
+            UpdateDate();
+        }
+
+        #endregion
+
+        #region AuthMethod
+
+        public Result AddAuthMethod(AuthType authType, string authKey, string? authData, string? salt)
+        {
+            if(_authMethods.Any(x => x.AuthType == authType))
+                return Result.Failure(Error.Conflict($"Данный метод аутентификации '{authType}' ужа зарегестирован, для вашего аккаунта!"));
+
+            var errors = new List<Error>();
+
+            var authKeyResult = AuthKey.Create(authKey);
+            var authDataResult = authData != null ? AuthData.Create(authData) : null;
+
+            authKeyResult.Switch(onSuccess: _ => { }, onFailure: errors.AddRange);
+            authDataResult?.Switch(onSuccess: _ => { }, onFailure: err => errors.AddRange(err));
+
+            if (errors.Count > 0)
+                return Result.Failure(errors);
+
+            var authMethod = AuthMethod.Create(this.Id, authType, authKeyResult.Value, authDataResult?.Value, salt);
+
+            _authMethods.Add(authMethod);
+            UpdateDate();
+
+            return Result.Success();
+        }
+
+        #endregion
+
+        #region SecureData
+
+        public Result AddSecureData(SecureDataType secureDataType, string secureEncryptedValue, string algoritm, int interation, string kdfType)
+        {
+            if (_secureDatas.Any(x => x.SecureDataType == secureDataType))
+                return Result.Failure(Error.Conflict($"Данный тип секретных данных '{secureDataType}' ужа зарегестирован, для вашего аккаунта!"));
+
+            var errors = new List<Error>();
+
+            var secureEncryptedValueResult = EncryptedValue.Create(secureEncryptedValue);
+            var secureEncryptedMetadataResult = EncryptedMetadata.Create(algoritm, interation, kdfType);
+
+            secureEncryptedValueResult.Switch(onSuccess: _ => { }, onFailure: errors.AddRange);
+            secureEncryptedMetadataResult.Switch(onSuccess: _ => { }, onFailure: errors.AddRange);
+
+            if (errors.Count > 0)
+                return Result.Failure(errors);
+
+            var secureData = SecureData.Create(this.Id, secureDataType, secureEncryptedValueResult.Value, secureEncryptedMetadataResult.Value);
+
+            _secureDatas.Add(secureData);
+            UpdateDate();
+
+            return Result.Success();
+        }
+
+        #endregion
     }
 }

@@ -19,12 +19,15 @@ namespace IdentityHub.IdentityService.Api.Controllers
             var command = new RegisterUserCommand
                 (
                     request.Login, 
-                    request.UserName, 
-                    request.Password, 
-                    request.ClientSAlt, 
-                    request.EncryptedDek, 
-                    request.Mail,
-                    [.. request.RoleIds.Select(roleId => Guid.Parse(roleId))]
+                    request.UserName,
+                    request.Verifier,
+                    request.ClientSalt,
+                    request.EncryptedDek,
+                    request.EncryptionAlgorithm,
+                    request.Iterations,
+                    request.KdfType,
+                    request.Email,
+                    request.Phone
                 );
 
             var result = await _mediator.Send(command, cancellationToken);

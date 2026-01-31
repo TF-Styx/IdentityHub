@@ -12,7 +12,7 @@ namespace IdentityHub.IdentityService.Domain.ValueObjects.User
 
         private static readonly Regex AllowedCharsRegex = new("^[a-zA-Z0-9_]+$");
 
-        internal Login(string value) { Value = value; }
+        private Login(string value) { Value = value; }
 
         public static Result<Login> Create(string value)
         {

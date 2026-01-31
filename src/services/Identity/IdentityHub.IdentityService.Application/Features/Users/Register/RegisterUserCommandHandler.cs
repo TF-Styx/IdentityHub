@@ -1,4 +1,5 @@
-﻿using IdentityHub.IdentityService.Domain.Models;
+﻿using IdentityHub.IdentityService.Domain.Enums;
+using IdentityHub.IdentityService.Domain.Models;
 using IdentityHub.IdentityService.Infrastructure.Persistence.Contexts;
 using MediatR;
 using Microsoft.Data.SqlClient;
@@ -15,16 +16,30 @@ namespace IdentityHub.IdentityService.Application.Features.Users.Register
 
         public async Task<Result> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
         {
+            var errors = new List<Error>();
+
             try
             {
-                var hashPassword = _passwordHasher.Hash(request.Password);
+                var userResult = User.Create(request.Login, request.UserName, request.Email);
+                User user = null!;
 
-                var user = User.Create(request.UserName, hashPassword, request.ClientSalt, request.EncryptedDek, request.Mail);
+                userResult.Switch(onSuccess: createdUser => user = createdUser, onFailure: errors.AddRange);
 
-                if (user.IsFailure)
-                    return Result.Failure(user.Errors);
+                if (errors.Count > 0)
+                    return Result.Failure(errors);
 
-                await _identityContext.Set<User>().AddAsync(user.Value, cancellationToken);
+                user.AddSecureData(SecureDataType.MainDek, request.EncryptedDek, request.EncryptionAlgorithm, request.Iterations, request.KdfType).Switch(() => { }, errors.AddRange);
+
+                user.AddAuthMethod(AuthType.SRP, request.Login, request.Verifier, request.ClientSalt).Switch(() => { }, errors.AddRange);
+                user.AddAuthMethod(AuthType.Email, request.Email, authData: null, salt: null).Switch(() => { }, errors.AddRange);
+
+                if (!string.IsNullOrWhiteSpace(request.Phone))
+                    user.AddAuthMethod(AuthType.NumberPhone, request.Phone, authData: null, salt: null).Switch(() => { }, errors.AddRange);
+
+                if (errors.Count > 0)
+                    return Result.Failure(errors);
+
+                await _identityContext.Set<User>().AddAsync(user, cancellationToken);
                 await _identityContext.SaveChangesAsync(cancellationToken);
 
                 return Result.Success();
@@ -33,8 +48,9 @@ namespace IdentityHub.IdentityService.Application.Features.Users.Register
             {
                 return Result.Failure(Error.Conflict("Email уже занят."));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Console.WriteLine(ex);
                 return Result.Failure(Error.New(ErrorCode.Save, "Произошла критическая ошибка на стороне сервера при регистрации"));
             }
         }

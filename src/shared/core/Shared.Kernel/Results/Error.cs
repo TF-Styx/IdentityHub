@@ -3,7 +3,9 @@
     public sealed record Error(ErrorCode ErrorCode, string Message)
     {
         public static Error New(ErrorCode errorCode, string message) => new(errorCode, message);
+        public static Error New(ErrorCode errorCode) => new(errorCode, "");
         public static Error Validation(string message) => new(ErrorCode.Validation, message);
+        public static Error ValidationPhone(string message = "Номер телефона не корректный!") => new(ErrorCode.Validation, message);
         public static Error InternalServer() => new(ErrorCode.Server, "Произошла ошибка на стороне сервера!");
 
         /// <summary>
