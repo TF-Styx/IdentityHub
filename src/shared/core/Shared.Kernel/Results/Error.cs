@@ -7,6 +7,7 @@
         public static Error Validation(string message) => new(ErrorCode.Validation, message);
         public static Error ValidationPhone(string message = "Номер телефона не корректный!") => new(ErrorCode.Validation, message);
         public static Error InternalServer() => new(ErrorCode.Server, "Произошла ошибка на стороне сервера!");
+        public static Error InternalServer(string message) => new(ErrorCode.Server, message);
 
         /// <summary>
         /// $"Не удалось найти элемент {message}!"
