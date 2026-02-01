@@ -1,4 +1,7 @@
+using IdentityHub.AuthService.Application.Ioc;
+using IdentityHub.AuthService.Application.Services;
 using IdentityHub.AuthService.Infrastructure.Ioc;
+using IdentityHub.AuthService.Infrastructure.Services;
 
 namespace IdentityHub.AuthService.Api
 {
@@ -12,6 +15,9 @@ namespace IdentityHub.AuthService.Api
             builder.Services.AddOpenApi();
 
             builder.Services.AddInfrastructure(builder.Configuration);
+            builder.Services.AddApplication();
+
+            builder.Services.AddHttpClient<IIdentityServiceClient, IdentityServiceClient>(client => client.BaseAddress = new Uri(builder.Configuration["IdentityService"]!));
 
             var app = builder.Build();
 

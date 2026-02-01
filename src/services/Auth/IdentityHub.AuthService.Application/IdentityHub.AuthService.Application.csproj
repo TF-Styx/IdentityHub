@@ -14,4 +14,11 @@
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.15.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\shared\common\Shared.Contracts\Shared.Contracts.csproj" />
+    <ProjectReference Include="..\..\..\shared\core\Shared.Kernel\Shared.Kernel.csproj" />
+    <ProjectReference Include="..\..\..\shared\security\Shared.Security\Shared.Security.csproj" />
+    <ProjectReference Include="..\IdentityHub.AuthService.Domain\IdentityHub.AuthService.Domain.csproj" />
+  </ItemGroup>
+
 </Project>

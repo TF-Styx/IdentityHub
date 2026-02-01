@@ -1,9 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using IdentityHub.AuthService.Application.Abstracts;
+using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
 namespace IdentityHub.AuthService.Infrastructure.Persistence.Contexts
 {
-    public sealed class AuthContext(DbContextOptions dbContextOptions) : DbContext(dbContextOptions)
+    public sealed class AuthContext(DbContextOptions dbContextOptions) : DbContext(dbContextOptions), IApplicationDbContext
     {
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
