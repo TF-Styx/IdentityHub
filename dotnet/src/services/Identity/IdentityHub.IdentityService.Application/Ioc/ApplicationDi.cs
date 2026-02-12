@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Shared.Security.Hashers;
+using Shared.Security.Abstraction.Hashers;
+using Shared.Security.Cryptography.Hashers;
 using System.Reflection;
 
 namespace IdentityHub.IdentityService.Application.Ioc

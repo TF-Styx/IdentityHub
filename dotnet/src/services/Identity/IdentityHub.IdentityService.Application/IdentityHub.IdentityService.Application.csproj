@@ -16,7 +16,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\shared\common\Shared.Contracts\Shared.Contracts.csproj" />
     <ProjectReference Include="..\..\..\shared\core\Shared.Kernel\Shared.Kernel.csproj" />
-    <ProjectReference Include="..\..\..\shared\security\Shared.Security\Shared.Security.csproj" />
+    <ProjectReference Include="..\..\..\shared\security\Shared.Security.Cryptography\Shared.Security.Cryptography.csproj" />
     <ProjectReference Include="..\IdentityHub.IdentityService.Infrastructure\IdentityHub.IdentityService.Infrastructure.csproj" />
   </ItemGroup>
 
