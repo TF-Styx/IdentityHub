@@ -55,14 +55,14 @@ namespace IdentityHub.AuthService.Application.Features.VerifySRP
             if (A <= 0 || A >= N)
                 errors.Add(Error.InternalServer("Некорректное значение A (out of range)!"));
 
-            BigInteger u = CalculateSRP(A, B);
+            BigInteger u = CalculateSRP((A, 384), (B, 384));
 
             if (u == 0)
                 errors.Add(Error.InternalServer("Оишбка вычисления сервера!"));
 
             BigInteger vU = BigInteger.ModPow(v, u, N);
             BigInteger S = BigInteger.ModPow((A * vU) % N, b, N);
-            BigInteger M1Server = CalculateSRP(A, B, S);
+            BigInteger M1Server = CalculateSRP((A, 384), (B, 384), (S, 384));
 
             // TODO : Исправть текст ошибки!!!
 
@@ -72,7 +72,7 @@ namespace IdentityHub.AuthService.Application.Features.VerifySRP
             if (errors.Count > 0)
                 return Result<AuthResponse>.Failure(errors);
 
-            BigInteger M2Server = CalculateSRP(A, M1Client, S);
+            BigInteger M2Server = CalculateSRP((A, 384), (M1Client, 32), (S, 384));
 
             var userMaybe = await _identityServiceClient.GetUserByLoginAsync(request.Login, cancellationToken);
 
@@ -100,24 +100,48 @@ namespace IdentityHub.AuthService.Application.Features.VerifySRP
             return Result<AuthResponse>.Success(new AuthResponse(accessToken, refreshToken, Convert.ToBase64String(M2Server.ToByteArray(true, true))));
         }
 
-        private BigInteger CalculateSRP(params BigInteger[] values)
+        // private BigInteger CalculateSRP(params BigInteger[] values)
+        // {
+        //     using var sha256 = SHA256.Create();
+        //     var combinedBytes = new List<byte>();
+
+        //     foreach (var v in values)
+        //     {
+        //         byte[] b = v.ToByteArray(isUnsigned: true, isBigEndian: true);
+        //         int targetLen = b.Length > 32 ? 384 : 32;
+
+        //         byte[] padded = new byte[targetLen];
+        //         Buffer.BlockCopy(b, 0, padded, targetLen - b.Length, b.Length);
+        //         combinedBytes.AddRange(padded);
+        //     }
+
+        //     byte[] hash = sha256.ComputeHash(combinedBytes.ToArray());
+
+        //     return new BigInteger(hash, isUnsigned: true, isBigEndian: true);
+        // }
+
+        private BigInteger CalculateSRP(params (BigInteger biValue, int length)[] values)
         {
             using var sha256 = SHA256.Create();
             var combinedBytes = new List<byte>();
 
-            foreach (var v in values)
-            {
-                byte[] b = v.ToByteArray(isUnsigned: true, isBigEndian: true);
-                int targetLen = b.Length > 32 ? 384 : 32;
-
-                byte[] padded = new byte[targetLen];
-                Buffer.BlockCopy(b, 0, padded, targetLen - b.Length, b.Length);
-                combinedBytes.AddRange(padded);
-            }
+            foreach (var (value, length) in values)
+                combinedBytes.AddRange(ToFixedLength(value, length));
 
             byte[] hash = sha256.ComputeHash(combinedBytes.ToArray());
 
             return new BigInteger(hash, isUnsigned: true, isBigEndian: true);
+        }
+
+        private byte[] ToFixedLength(BigInteger value, int length)
+        {
+            var bytes = value.ToByteArray(isUnsigned: true, isBigEndian: true);
+
+            var paddet = new byte[length];
+
+            Buffer.BlockCopy(bytes, 0, paddet, length - bytes.Length, bytes.Length);
+
+            return paddet;
         }
     }
 }
