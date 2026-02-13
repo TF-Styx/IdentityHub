@@ -1,0 +1,14 @@
+/* src/shared/styles/global.css */
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  color: white; /* ← весь текст белый */
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Принудительно делаем белым даже вложенные элементы */
+body * {
+  color: inherit; /* наследует от body */
+}

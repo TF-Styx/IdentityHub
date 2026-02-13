@@ -1,0 +1,6 @@
+@IdentityHub.BFF_HostAddress = http://localhost:5077
+
+GET {{IdentityHub.BFF_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
