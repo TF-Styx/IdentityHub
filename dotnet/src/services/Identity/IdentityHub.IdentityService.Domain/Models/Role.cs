@@ -12,16 +12,14 @@ namespace IdentityHub.IdentityService.Domain.Models
         private Role(RoleId id, RoleName roleName) : base(id)
             => Name = roleName;
 
-        public static Result<Role> Create(RoleId id, RoleName roleName)
+        public static Result<Role> Create(RoleName roleName)
         {
-            var roleIdResult = RoleId.Create(id);
             var roleNameResult = RoleName.Create(roleName);
 
-            if (roleIdResult.IsFailure || roleNameResult.IsFailure)
+            if (roleNameResult.IsFailure)
             {
                 var errors = new List<Error>();
 
-                errors.AddRange(roleIdResult.Errors);
                 errors.AddRange(roleNameResult.Errors);
 
                 return Result<Role>.Failure(errors);
@@ -29,12 +27,15 @@ namespace IdentityHub.IdentityService.Domain.Models
 
             var role = new Role
                 (
-                    roleIdResult.Value,
+                    RoleId.New(),
                     roleNameResult.Value
                 );
 
             return Result<Role>.Success(role);
         }
+
+        public static Result<Role> Empty()
+            => Result<Role>.Success(new Role());
 
         public void UpdateRoleName(RoleName roleName)
             => Name = roleName;

@@ -98,10 +98,24 @@ namespace IdentityHub.IdentityService.Domain.Models
 
         #region Role
 
-        public void AddRole(RoleId roleId)
+        public IEnumerable<Error> AddRole(params SmartRole[] roles)
         {
-            if (_userRoles.Where(x => x.RoleId == roleId).Count() <= 0)
-                _userRoles.Add(Models.UserRoles.Create(this.Id, roleId));
+            var errors = new List<Error>();
+
+            foreach (var item in roles)
+            {
+                if (_userRoles.Where(x => x.RoleId == item.Id).Count() > 0)
+                {
+                    errors.Add(Error.New(ErrorCode.Conflict, $"Роль '{item.Name}' уже есть!"));
+                    continue;
+                }
+                
+                _userRoles.Add(Models.UserRoles.Create(this.Id, item.Id));
+            }
+
+            UpdateDate();
+
+            return errors;
         }
 
         public void RemoveRole(RoleId roleId)

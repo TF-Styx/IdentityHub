@@ -5,7 +5,7 @@ namespace IdentityHub.IdentityService.Domain.ValueObjects.Role
     public readonly record struct RoleName
     {
         public const int MAX_LENGTH = 50;
-        public const int MIN_LENGTH = 5;
+        public const int MIN_LENGTH = 3;
 
         public string Value { get; }
 
@@ -23,13 +23,15 @@ namespace IdentityHub.IdentityService.Domain.ValueObjects.Role
             if (value.Length >= MAX_LENGTH)
                 return Result<RoleName>.Failure(Error.Validation($"Максимально допустимая длина '{nameof(RoleName)}' = {MAX_LENGTH}!"));
 
-            if (value.Length <= MIN_LENGTH)
+            if (value.Length < MIN_LENGTH)
                 return Result<RoleName>.Failure(Error.Validation($"Минимально допустимая длина '{nameof(RoleName)}' = {MIN_LENGTH}!"));
 
             var trimmedUserName = value.Trim();
 
             return Result<RoleName>.Success(new RoleName(trimmedUserName));
         }
+
+        public static Result<RoleName> Empty() => Result<RoleName>.Success(new RoleName(string.Empty));
 
         public override string ToString() => Value.ToString();
         public static implicit operator string(RoleName roleName) => roleName.Value;
