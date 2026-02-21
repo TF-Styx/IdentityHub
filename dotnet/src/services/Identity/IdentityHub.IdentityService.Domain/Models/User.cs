@@ -21,8 +21,8 @@ namespace IdentityHub.IdentityService.Domain.Models
 
         public StatusId StatusId { get; private set; }
 
-        private readonly List<RoleId> _roleIds = [];
-        public IReadOnlyCollection<RoleId> RoleIds => _roleIds.AsReadOnly();
+        private readonly List<UserRoles> _userRoles = [];
+        public IReadOnlyCollection<UserRoles> UserRoles => _userRoles.AsReadOnly();
 
         private readonly List<AuthMethod> _authMethods = [];
         public IReadOnlyCollection<AuthMethod> AuthMethods => _authMethods.AsReadOnly();
@@ -100,13 +100,18 @@ namespace IdentityHub.IdentityService.Domain.Models
 
         public void AddRole(RoleId roleId)
         {
-            if (!_roleIds.Contains(roleId))
-                _roleIds.Add(roleId);
+            if (_userRoles.Where(x => x.RoleId == roleId).Count() <= 0)
+                _userRoles.Add(Models.UserRoles.Create(this.Id, roleId));
         }
 
         public void RemoveRole(RoleId roleId)
         {
-            _roleIds.Remove(roleId);
+            var userRole = _userRoles.FirstOrDefault(x => x.RoleId == roleId);
+
+            if (userRole == null)
+                return;
+
+            _userRoles.Remove(userRole);
             UpdateDate();
         }
 

@@ -56,22 +56,25 @@ namespace IdentityHub.IdentityService.Infrastructure.Persistence.Configurations
 
             builder.HasOne<Status>().WithMany().HasForeignKey(user => user.StatusId).OnDelete(DeleteBehavior.Restrict);
 
-            builder.Property(x => x.RoleIds)
-                   .HasColumnName("RoleIds")
-                   .HasColumnType("uuid[]")
-                   .HasField("_roleIds")
-                   .UsePropertyAccessMode(PropertyAccessMode.Field)
-                   .HasConversion
-                        (
-                            roleIds => roleIds.Select(roleId => roleId.Value).ToArray(),
-                            dbValue => (dbValue ?? Array.Empty<Guid>()).Select(roleId => new RoleId(roleId)).ToList()
-                        )
-                        .Metadata.SetValueComparer(new ValueComparer<IReadOnlyCollection<RoleId>>
-                            (
-                                (c1, c2) => c1!.SequenceEqual(c2!),
-                                c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
-                                c => c.ToList()
-                            ));
+            //builder.Property(x => x.UserRoles)
+            //       .HasColumnName("RoleIds")
+            //       .HasColumnType("uuid[]")
+            //       .HasField("_roleIds")
+            //       .UsePropertyAccessMode(PropertyAccessMode.Field)
+            //       .HasConversion
+            //            (
+            //                roleIds => roleIds.Select(roleId => roleId.Value).ToArray(),
+            //                dbValue => (dbValue ?? Array.Empty<Guid>()).Select(roleId => new RoleId(roleId)).ToList()
+            //            )
+            //            .Metadata.SetValueComparer(new ValueComparer<IReadOnlyCollection<RoleId>>
+            //                (
+            //                    (c1, c2) => c1!.SequenceEqual(c2!),
+            //                    c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
+            //                    c => c.ToList()
+            //                ));
+
+            builder.HasMany(user => user.UserRoles).WithOne().HasForeignKey(userRoles => userRoles.UserId).OnDelete(DeleteBehavior.Cascade);
+            builder.Navigation(user => user.UserRoles).HasField("_userRoles").UsePropertyAccessMode(PropertyAccessMode.Field);
 
             builder.HasMany(user => user.AuthMethods).WithOne().HasForeignKey(authMethod => authMethod.UserId).OnDelete(DeleteBehavior.Cascade);
             builder.Navigation(user => user.AuthMethods).HasField("_authMethods").UsePropertyAccessMode(PropertyAccessMode.Field);

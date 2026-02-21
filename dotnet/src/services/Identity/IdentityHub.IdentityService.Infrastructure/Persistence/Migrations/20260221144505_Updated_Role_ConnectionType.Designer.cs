@@ -3,6 +3,7 @@ using System;
 using IdentityHub.IdentityService.Infrastructure.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace IdentityHub.IdentityService.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(IdentityContext))]
-    partial class IdentityContextModelSnapshot : ModelSnapshot
+    [Migration("20260221144505_Updated_Role_ConnectionType")]
+    partial class Updated_Role_ConnectionType
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -190,8 +193,6 @@ namespace IdentityHub.IdentityService.Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("RoleId");
-
                     b.HasIndex("UserId");
 
                     b.ToTable("UserRoles", (string)null);
@@ -226,12 +227,6 @@ namespace IdentityHub.IdentityService.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("IdentityHub.IdentityService.Domain.Models.UserRoles", b =>
                 {
-                    b.HasOne("IdentityHub.IdentityService.Domain.Models.Role", null)
-                        .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("IdentityHub.IdentityService.Domain.Models.User", null)
                         .WithMany("UserRoles")
                         .HasForeignKey("UserId")
