@@ -31,6 +31,8 @@ namespace IdentityHub.IdentityService.Application.Features.Users.Register
                 user.AddAuthMethod(AuthType.SRP, request.Login, request.Verifier, request.ClientSalt).Switch(() => { }, errors.AddRange);
                 user.AddAuthMethod(AuthType.Email, request.Email, authData: null, salt: null).Switch(() => { }, errors.AddRange);
 
+                user.AddRole(SmartRole.User);
+
                 if (!string.IsNullOrWhiteSpace(request.Phone))
                     user.AddAuthMethod(AuthType.NumberPhone, request.Phone, authData: null, salt: null).Switch(() => { }, errors.AddRange);
 
