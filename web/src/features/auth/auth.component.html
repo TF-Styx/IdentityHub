@@ -1,0 +1,29 @@
+<div class="login-page">
+    <form class="form" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <div class="title">Добро пожаловать,<br><span>войдите, чтобы продолжить</span></div>
+        <input class="input" id="login" name="login" placeholder="Login" type="text" 
+            formControlName="login" [class.error]="loginForm.get('login')?.invalid && loginForm.get('login')?.touched">
+        @if (loginForm.get('login')?.hasError('required') && loginForm.get('login')?.touched) {
+            <small class="error-message">Поле обязательно!</small>
+        }
+        @if (loginForm.get('login')?.hasError('minLength') && loginForm.get('login')?.touched) {
+            <small class="error-message">Минимальное значение 2 символов!</small>
+        }
+
+        <input class="input" id="password" name="password" placeholder="Password" type="password" 
+            formControlName="password" [class.error]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+        @if (loginForm.get('password')?.hasError('required') && loginForm.get('password')?.touched){
+            <small class="error-message">Поле обязательно!</small>
+        }
+        @if (loginForm.get('password')?.hasError('minLength') && loginForm.get('password')?.touched){
+            <small class="error-message">Минимальное значение 8 символов!</small>
+        }
+
+        <button class="button-confirm" type="submit" [disabled]="loginForm.invalid || isLoading">{{isLoading ? 'Вход...' : 'Войти'}}</button>
+
+        <p class="signup">
+            У вас нет аккаунт?
+            <a routerLink="/register" class="" style="margin-left: 5px;">Регистрация</a>
+        </p>
+    </form>
+</div>

@@ -1,1 +1,51 @@
-/* You can add global styles to this file, and also import other style files */
+@use './variables';
+
+body, html, app-root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background-color: variables.$color-bg; 
+  color: #f1f5f9;
+  font-family: system-ui, sans-serif;
+}
+
+app-root {
+  display: block;
+  height: 100%;
+}
+
+.login-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  width: 100%;
+  background-color: variables.$color-bg;
+}
+
+// #region Сыылки
+p {
+    color: black;
+}
+
+.signup a {
+  margin-left: 5px;          /* можно перенести сюда вместо инлайн-стиля */
+  color: #4f46e5;            /* яркий индиго */
+  text-decoration: none;     /* убираем подчёркивание */
+  font-weight: 500;
+  position: relative;
+  transition: color 0.2s ease;
+}
+
+.signup a:hover {
+  color: #6366f1;            /* светлее при наведении */
+  text-decoration: underline; /* или оставить без подчёркивания */
+  text-underline-offset: 4px;
+}
+
+.signup a:focus-visible {
+  outline: 2px solid #4f46e5;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+// #endregion
