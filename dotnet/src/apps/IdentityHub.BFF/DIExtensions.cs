@@ -30,8 +30,7 @@ namespace IdentityHub.BFF
                         name: "AllowSpecificOrigin",
                             policy =>
                             {
-                                policy.WithOrigins("http://127.0.0.1:4200")
-                                      .WithOrigins("http://localhost:5173") // Разрешенный домен вашего фронтенда
+                                policy.WithOrigins("http://127.0.0.1:4200") // Разрешенный домен вашего фронтенда
                                       .WithOrigins("http://localhost:5012")
                                       .WithOrigins("http://localhost:5005")
                                       .AllowAnyHeader()

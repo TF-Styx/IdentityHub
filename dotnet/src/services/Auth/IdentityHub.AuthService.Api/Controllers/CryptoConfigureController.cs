@@ -13,6 +13,13 @@ namespace IdentityHub.AuthService.Api.Controllers
         [HttpGet("public-key")]
         [AllowAnonymous]
         public async Task<IActionResult> GetCryptoConfig()
-            => Ok(new PublicKeyResponse(_configuration["Security:RSA:PublickKey"]!));
+        {
+            var publicKey = _configuration["Security:RSA:PublickKey"];
+            return Ok(new 
+            {
+                PublicKey = publicKey
+            });
+        }
+            // => Ok(new PublicKeyResponse(_configuration["Security:RSA:PublickKey"]!));
     }
 }
