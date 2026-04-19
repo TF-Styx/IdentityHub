@@ -4,6 +4,7 @@ using IdentityHub.AuthService.Infrastructure.Redis;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Shared.Redis;
 using StackExchange.Redis;
 
 namespace IdentityHub.AuthService.Infrastructure.Ioc
