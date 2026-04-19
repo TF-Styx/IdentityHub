@@ -1,4 +1,4 @@
-﻿namespace IdentityHub.AuthService.Infrastructure.Redis
+﻿namespace Shared.Redis
 {
     public sealed record RedisOptions
     {
