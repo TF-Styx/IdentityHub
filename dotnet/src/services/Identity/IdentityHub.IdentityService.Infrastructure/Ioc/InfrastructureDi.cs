@@ -1,4 +1,5 @@
-﻿using IdentityHub.IdentityService.Infrastructure.Persistence.Contexts;
+﻿using IdentityHub.IdentityService.Application.Abstracts;
+using IdentityHub.IdentityService.Infrastructure.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,6 +13,8 @@ namespace IdentityHub.IdentityService.Infrastructure.Ioc
             var connectionStrings = configuration.GetConnectionString("DefaultConnection");
 
             services.AddDbContext<IdentityContext>(options => options.UseNpgsql(connectionStrings));
+
+            services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<IdentityContext>());
 
             return services;
         }

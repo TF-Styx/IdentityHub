@@ -20,6 +20,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\shared\infrastructure\Shared.Redis\Shared.Redis.csproj" />
+    <ProjectReference Include="..\IdentityHub.IdentityService.Application\IdentityHub.IdentityService.Application.csproj" />
     <ProjectReference Include="..\IdentityHub.IdentityService.Domain\IdentityHub.IdentityService.Domain.csproj" />
   </ItemGroup>
 

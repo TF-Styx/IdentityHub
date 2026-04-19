@@ -1,6 +1,6 @@
+using IdentityHub.IdentityService.Application.Abstracts;
 using IdentityHub.IdentityService.Domain.Enums;
 using IdentityHub.IdentityService.Domain.Models;
-using IdentityHub.IdentityService.Infrastructure.Persistence.Contexts;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Shared.Contracts.Response.User;
@@ -8,9 +8,9 @@ using Shared.Kernel.Results;
 
 namespace IdentityHub.IdentityService.Application.Features.Users.InternalUser.InternalUserByLogin
 {
-    public sealed class InternalUserByLoginHandler(IdentityContext context) : IRequestHandler<InternalUserByLoginQuery, Result<UserResponse>>
+    public sealed class InternalUserByLoginHandler(IApplicationDbContext context) : IRequestHandler<InternalUserByLoginQuery, Result<UserResponse>>
     {
-        private readonly IdentityContext _context = context;
+        private readonly IApplicationDbContext _context = context;
 
         public async Task<Result<UserResponse>> Handle(InternalUserByLoginQuery request, CancellationToken cancellationToken)
         {

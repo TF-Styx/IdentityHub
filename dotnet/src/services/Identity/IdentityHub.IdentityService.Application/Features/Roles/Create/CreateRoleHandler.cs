@@ -1,14 +1,14 @@
-﻿using IdentityHub.IdentityService.Domain.Models;
+﻿using IdentityHub.IdentityService.Application.Abstracts;
+using IdentityHub.IdentityService.Domain.Models;
 using IdentityHub.IdentityService.Domain.ValueObjects.Role;
-using IdentityHub.IdentityService.Infrastructure.Persistence.Contexts;
 using MediatR;
 using Shared.Kernel.Results;
 
 namespace IdentityHub.IdentityService.Application.Features.Roles.Create
 {
-    public sealed class CreateRoleHandler(IdentityContext context) : IRequestHandler<CreateRoleCommand, Result>
+    public sealed class CreateRoleHandler(IApplicationDbContext context) : IRequestHandler<CreateRoleCommand, Result>
     {
-        private readonly IdentityContext _context = context;
+        private readonly IApplicationDbContext _context = context;
 
         public async Task<Result> Handle(CreateRoleCommand request, CancellationToken cancellationToken)
         {
