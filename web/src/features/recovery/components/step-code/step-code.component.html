@@ -1,0 +1,13 @@
+<div class="login-page">
+    <form class="form" [formGroup]="stepCodeForm" (ngSubmit)="onSubmit()">
+        <div class="title">Code</div>
+
+        <input class="input" id="code" name="code" placeholder="Code" type="text" 
+            formControlName="code" [class.error]="stepCodeForm.get('code')?.invalid && stepCodeForm.get('code')?.touched">
+        @if (stepCodeForm.get('code')?.hasError('required') && stepCodeForm.get('code')?.touched) {
+            <small class="error-message">Поле обязательно!</small>
+        }
+
+        <button class="button-confirm" type="submit" [disabled]="stepCodeForm.invalid || isLoading">{{isLoading ? 'Подтверждение...' : 'Подтвердить'}}</button>
+    </form>
+</div>
