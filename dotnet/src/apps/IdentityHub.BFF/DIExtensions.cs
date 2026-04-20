@@ -5,6 +5,9 @@ using IdentityHub.BFF.Features.Auth.SRPChallenge;
 using IdentityHub.BFF.Features.Auth.SRPVerify;
 using IdentityHub.BFF.Features.PublicKey;
 using IdentityHub.BFF.Features.Registration;
+using IdentityHub.BFF.Features.User.GenerateCode;
+using IdentityHub.BFF.Features.User.RecoveryAccessPassword;
+using IdentityHub.BFF.Features.User.VerifyConfirmCode;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace IdentityHub.BFF
@@ -62,6 +65,9 @@ namespace IdentityHub.BFF
             webApplication.MapSRPVerify();
             webApplication.MapRegistration();
             webApplication.MapPublicKey();
+            webApplication.MapGenerateCode();
+            webApplication.MapVerifyConfirmCode();
+            webApplication.MapRecoveryAccessPassword();
 
             return webApplication;
         }

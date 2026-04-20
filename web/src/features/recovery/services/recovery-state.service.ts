@@ -7,8 +7,6 @@ export class RecoveryStateService{
     isCodeSent = false;
     isCodeVerified = false;
 
-    private readonly MOCK_CODE = '1234';
-
     setLogin(login: string){
         this.login = login;
         this.isCodeSent = true;

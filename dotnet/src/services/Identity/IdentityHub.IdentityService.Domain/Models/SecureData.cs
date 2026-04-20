@@ -43,5 +43,15 @@ namespace IdentityHub.IdentityService.Domain.Models
                     secureEncryptedValue, 
                     secureEncryptedMetadata
                 );
+
+        internal void Update
+            (
+                EncryptedValue secureEncryptedValue, 
+                EncryptedMetadata secureEncryptedMetadata
+            )
+        {
+            SecureEncryptedValue = secureEncryptedValue;
+            SecureEncryptedMetadata = secureEncryptedMetadata;
+        }
     }
 }

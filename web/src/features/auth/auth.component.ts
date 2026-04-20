@@ -34,6 +34,8 @@ export class AuthComponent{
 
         const {login: login, password: password} = this.loginForm.value
 
+        console.log(`${login}-${password}`);
+
         const { salt, b } = await firstValueFrom(this.authApi.getSRPChallenge({ Login: login }));
 
         const srpProof = await this.secureDataService.generateSrpProof(password, salt, b);
@@ -56,12 +58,14 @@ export class AuthComponent{
           m2
         );
 
-        if (isValid){
+        if (!isValid){
             this.errorMessage = "Подлинность сервера не подтверждена!"
             return;
         }
 
-        console.log('Успешная авторизация!');
+        alert('Пароль успешно изменён!');
+        
+        this.router.navigate(['/']);
 
         this.isLoading = true;
         this.errorMessage = null;

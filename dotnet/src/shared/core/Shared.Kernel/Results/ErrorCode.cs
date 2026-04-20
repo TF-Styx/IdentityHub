@@ -14,6 +14,7 @@
         Unauthorized = 9,
         Validation = 10,
         ValueObject = 11,
-        Redis = 12
+        Redis = 12,
+        ConfirmCode = 13,
     }
 }
