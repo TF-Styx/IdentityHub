@@ -1,11 +1,11 @@
 import { Component, inject } from "@angular/core";
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
-import { Router } from "@angular/router";
+import { Router, RouterLink } from "@angular/router";
 import { AuthApi } from "./auth.api";
 import { SecureDataService } from "../../entities/user/lib/secureDataService";
 import { firstValueFrom } from "rxjs";
 
-@Component({selector: 'app-auth', templateUrl: './auth.component.html', styleUrls: ['./auth.component.scss'], standalone: true, imports: [ReactiveFormsModule]})
+@Component({selector: 'app-auth', templateUrl: './auth.component.html', styleUrls: ['./auth.component.scss'], standalone: true, imports: [ReactiveFormsModule, RouterLink]})
 
 export class AuthComponent{
     private formBuilder = inject(FormBuilder);
@@ -63,7 +63,7 @@ export class AuthComponent{
             return;
         }
 
-        alert('Пароль успешно изменён!');
+        alert('Вход успешен!');
         
         this.router.navigate(['/']);
 

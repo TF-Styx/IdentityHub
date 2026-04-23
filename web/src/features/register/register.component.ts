@@ -1,13 +1,13 @@
 import { Component, inject } from "@angular/core";
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
-import { Router } from "@angular/router";
+import { Router, RouterLink } from "@angular/router";
 import { RegisterApi } from "./register.api";
 import { SecureDataService } from "../../entities/user/lib/secureDataService";
 import { firstValueFrom } from "rxjs";
 import { fromBase64, toBase64 } from "../../shared/lib/base64";
 import { RegisterRequest } from "./types";
 
-@Component({selector: 'app-register', templateUrl: './register.component.html', styleUrls: ['./register.component.scss'], standalone: true, imports: [ReactiveFormsModule]})
+@Component({selector: 'app-register', templateUrl: './register.component.html', styleUrls: ['./register.component.scss'], standalone: true, imports: [ReactiveFormsModule, RouterLink]})
 
 export class RegisterComponent{
     private formBuilder = inject(FormBuilder);
