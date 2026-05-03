@@ -1,5 +1,10 @@
 @use './variables';
 
+.app-content {
+  position: relative;
+  z-index: 1; 
+}
+
 body, html, app-root {
   margin: 0;
   padding: 0;

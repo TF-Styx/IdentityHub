@@ -10,7 +10,8 @@ const routes: Routes = [{
     path: '',
     component: RecoveryComponent,
     children: [
-        { path: '', component: StepLoginComponent, canActivate: [recoverStepGuard] }, // /recovery
+        { path: '', redirectTo: 'login', pathMatch: 'prefix' },
+        { path: 'login', component: StepLoginComponent, canActivate: [recoverStepGuard] }, // /recovery/login
         { path: 'code', component: StepCodeComponent, canActivate: [recoverStepGuard] }, // /recovery/code
         { path: 'reset', component: StepResetComponent, canActivate: [recoverStepGuard] }, // /recovery/reset
         { path: '**', redirectTo: '' } // Fallback внутри модуля
