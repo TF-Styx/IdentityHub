@@ -1,7 +1,78 @@
 @if (isLoading) {
-    <h1>Login: {{login}}</h1>
-    <h1>User name: {{userName}}</h1>
-    <h1>Email: {{email}}</h1>
+    <div class="page">
+        <form class="form">
+            <!-- Верхняя часть: аватар слева, инфо справа -->
+            <div class="profile-top">
+                <!-- #region Avatar -->
+                <div class="avatar-page">
+                    <div class="avatar-form">
+                        <img class="avatar-img" src="assets/images/Screenshot_4.png" alt="Avatar">
+                    </div>
+                    <div class="avatar-btn">
+                        <button type="button" class="avatar-btn-add">+</button>
+                        <button type="button" class="avatar-btn-delete">-</button>
+                    </div>
+                </div>
+                <!-- #endregion -->
+                 
+                <!-- #region General info -->
+                <div class="info-page">
+                    <div class="info-p">
+                        <p>
+                            <label for="login">Login:</label>
+                            <input class="input" id="login" [value]="login" placeholder="Login">
+                        </p>
+                        <p>
+                            <label for="userName">Name:</label>
+                            <input class="input" id="userName" [value]="userName" placeholder="Name">
+                        </p>
+                        <p>
+                            <label for="email">Email:</label>
+                            <input class="input" id="email" [value]="email" placeholder="Email">
+                        </p>
+                    </div>
+                </div>
+                <!-- #endregion -->
+            </div>
+
+            <!-- #region Кнопки управления (под всем) -->
+            <div class="control-btn">
+                <button class="button-confirm" type="submit">Сохранить
+                    <!-- {{isLoading ? 'Сохранение...' : 'Сохранить'}} -->
+                </button>
+            </div>
+            <!-- #endregion -->
+
+            
+            <!-- #region Avatar -->
+            <!-- <div class="avatar-page">
+                <div class="avatar-form">
+                    <img class="avatar-img" src="web\src\resourses\Screenshot_4.png">
+                </div>
+                <div class="avatar-btn">
+                    <button class="avatar-btn-add">+</button>
+                    <button class="avatar-btn-delete">-</button>
+                </div>
+            </div> -->
+            <!-- #endregion -->
+             
+            <!-- #region General info -->
+            <!-- <div class="info-page">
+                <div class="info-p">
+                    <p>Login: <input class="input" [value]="login" placeholder="Login"></p>
+                    <p>Name: <input class="input" [value]="userName" placeholder="Name"></p>
+                    <p>Email: <input class="input" [value]="email" placeholder="Email"></p>
+                </div>
+            </div> -->
+            <!-- #endregion -->
+
+            <!-- #region Кнопки управления -->
+            <!-- <div class="control-btn">
+                <button class="button-confirm">Сохранить</button>
+            </div> -->
+            <!-- #endregion -->
+        </form>
+    </div>
 }
 @else {
     <h1>Загрузка...</h1>

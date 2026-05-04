@@ -1,9 +1,9 @@
 import { CommonModule } from "@angular/common";
 import { ChangeDetectorRef, Component, inject, OnInit } from "@angular/core";
-import { FormBuilder } from "@angular/forms";
+import { FormBuilder, ɵInternalFormsSharedModule } from "@angular/forms";
 import { ProfileGeneralInfoApi } from "./profile-general-info.api";
 
-@Component({selector: 'general-info', templateUrl: './profile-general-info.component.html', styleUrls: ['./profile-general-info.component.scss'], standalone: true, imports: [CommonModule]})
+@Component({selector: 'general-info', templateUrl: './profile-general-info.component.html', styleUrls: ['./profile-general-info.component.scss'], standalone: true, imports: [CommonModule, ɵInternalFormsSharedModule]})
 
 export class ProfileGeneralInfoComponent implements OnInit {
     private fromBuilder: FormBuilder = inject(FormBuilder)
