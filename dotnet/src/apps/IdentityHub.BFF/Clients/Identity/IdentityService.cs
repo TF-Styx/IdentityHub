@@ -1,6 +1,7 @@
 using System.Text;
 using System.Text.Json;
 using Shared.Contracts.Request.User;
+using Shared.Contracts.Response.User;
 using Shared.Kernel.Results;
 
 namespace IdentityHub.BFF.Clients.Identity
@@ -8,6 +9,16 @@ namespace IdentityHub.BFF.Clients.Identity
     public class IdentityService(HttpClient httpClient) : IIdentityService
     {
         private readonly JsonSerializerOptions _jsonSerializerOptions = new() { PropertyNameCaseInsensitive = true };
+
+        public async Task<Result<ProfileGeneralInfoResponse?>> GetGeneralInfoAsync(string userId)
+        {
+            var response = await httpClient.GetAsync($"api/users/general-info/{userId}");
+
+            if (!response.IsSuccessStatusCode)
+                return Result<ProfileGeneralInfoResponse?>.Failure(Error.New(ErrorCode.Create, await response.Content.ReadAsStringAsync()));
+                
+            return Result<ProfileGeneralInfoResponse?>.Success(await response.Content.ReadFromJsonAsync<ProfileGeneralInfoResponse>());
+        }
 
         public async Task<Result> RegistrationAsync(RegisterUserRequest request)
         {

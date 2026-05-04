@@ -3,11 +3,13 @@ using IdentityHub.BFF.Clients.Auth;
 using IdentityHub.BFF.Clients.Identity;
 using IdentityHub.BFF.Features.Auth.SRPChallenge;
 using IdentityHub.BFF.Features.Auth.SRPVerify;
+using IdentityHub.BFF.Features.Profile;
 using IdentityHub.BFF.Features.PublicKey;
 using IdentityHub.BFF.Features.Registration;
 using IdentityHub.BFF.Features.User.GenerateCode;
 using IdentityHub.BFF.Features.User.RecoveryAccessPassword;
 using IdentityHub.BFF.Features.User.VerifyConfirmCode;
+using IdentityHub.BFF.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace IdentityHub.BFF
@@ -17,6 +19,8 @@ namespace IdentityHub.BFF
         public static IServiceCollection AddServices(this IServiceCollection services)
         {
             services.AddMediatR(prop => prop.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
+
+            services.AddSingleton<JwtReader>();
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
             {
@@ -61,6 +65,7 @@ namespace IdentityHub.BFF
 
         public static WebApplication AddEndpoints(this WebApplication webApplication)
         {
+            webApplication.MapGetGeneralInfo();
             webApplication.MapSRPChallenge();
             webApplication.MapSRPVerify();
             webApplication.MapRegistration();

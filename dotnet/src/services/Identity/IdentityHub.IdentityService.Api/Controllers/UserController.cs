@@ -6,6 +6,7 @@ using IdentityHub.IdentityService.Application.Features.Users.Register;
 using IdentityHub.IdentityService.Application.Features.Users.GenerateConfirmCode;
 using IdentityHub.IdentityService.Application.Features.Users.VerifyConfirmCode;
 using IdentityHub.IdentityService.Application.Features.Users.RecoveryAccess;
+using IdentityHub.IdentityService.Application.Features.Users.GetGeneralInfo;
 
 namespace IdentityHub.IdentityService.Api.Controllers
 {
@@ -14,6 +15,20 @@ namespace IdentityHub.IdentityService.Api.Controllers
     public class UserController(IMediator mediator) : Controller
     {
         private readonly IMediator _mediator = mediator;
+
+        [HttpGet("general-info/{userId}")]
+        public async Task<IActionResult> GetGeneralInfo([FromRoute] Guid userId, CancellationToken cancellationToken = default)
+        {
+            var command = new GetGeneralInfoQuery(userId);
+
+            var result = await _mediator.Send(command, cancellationToken);
+
+            return result.Match<IActionResult>
+                (
+                    onSuccess: () => Ok(result.Value),
+                    onFailure: errors => BadRequest(errors)
+                );
+        }
 
         [HttpPost]
         [AllowAnonymous]
