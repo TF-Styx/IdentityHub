@@ -30,7 +30,7 @@ export class StepLoginComponent{
                 await firstValueFrom(this.stepLoginApi.generateCode(this.stepLoginForm.value.login));
                 
                 this.state.setLogin(this.stepLoginForm.value.login);
-                this.router.navigate(['code'], { relativeTo: this.route });
+                this.router.navigate(['code'], {relativeTo: this.route.parent});
                 
             } catch (err){
                 console.error('Ошибка: ', err);
