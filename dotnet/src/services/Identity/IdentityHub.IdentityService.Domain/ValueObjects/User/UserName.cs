@@ -14,7 +14,7 @@ namespace IdentityHub.IdentityService.Domain.ValueObjects.User
         public static Result<UserName> Create(string value)
         {
             if (string.IsNullOrWhiteSpace(value))
-                return Result<UserName>.Failure(Error.Validation("Логин было пустым!"));
+                return Result<UserName>.Failure(Error.Validation("Имя пользователя было пустым!"));
 
             if (value.Length >= MAX_LENGTH)
                 return Result<UserName>.Failure(Error.Validation($"Максимально допустимая длина '{nameof(UserName)}' = {MAX_LENGTH}!"));

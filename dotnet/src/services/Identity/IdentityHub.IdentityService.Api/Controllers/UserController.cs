@@ -7,6 +7,7 @@ using IdentityHub.IdentityService.Application.Features.Users.GenerateConfirmCode
 using IdentityHub.IdentityService.Application.Features.Users.VerifyConfirmCode;
 using IdentityHub.IdentityService.Application.Features.Users.RecoveryAccess;
 using IdentityHub.IdentityService.Application.Features.Users.GetGeneralInfo;
+using IdentityHub.IdentityService.Application.Features.Users.UpdateUserName;
 
 namespace IdentityHub.IdentityService.Api.Controllers
 {
@@ -98,6 +99,20 @@ namespace IdentityHub.IdentityService.Api.Controllers
                     request.Iterations,
                     request.KdfType
                 );  
+
+            var result = await _mediator.Send(command, cancellationToken);
+
+            return result.Match<IActionResult>
+                (
+                    onSuccess: () => Ok(),
+                    onFailure: errors => BadRequest(errors)
+                );
+        }
+
+        [HttpPatch("update-name")]
+        public async Task<IActionResult> UpdateUserName([FromBody] UpdateUserNameRequest request, CancellationToken cancellationToken = default)
+        {
+            var command = new UpdateUserNameCommand(Guid.Parse(request.UserId), request.UserName);
 
             var result = await _mediator.Send(command, cancellationToken);
 
