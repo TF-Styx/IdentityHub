@@ -1,12 +1,13 @@
 @if (isLoading) {
     <div class="page">
-        <form class="form">
+        <form class="form" [formGroup]="profileForm" (ngSubmit)="onUpdateUserName()">
             <!-- Верхняя часть: аватар слева, инфо справа -->
             <div class="profile-top">
                 <!-- #region Avatar -->
                 <div class="avatar-page">
                     <div class="avatar-form">
-                        <img class="avatar-img" src="assets/images/Screenshot_4.png" alt="Avatar">
+                        <img class="avatar-img" alt="Avatar">
+                        <!-- src="assets/images/Screenshot_4.png" -->
                     </div>
                     <div class="avatar-btn">
                         <button type="button" class="avatar-btn-add">+</button>
@@ -20,15 +21,22 @@
                     <div class="info-p">
                         <p>
                             <label for="login">Login:</label>
-                            <input class="input" id="login" [value]="login" placeholder="Login">
+                            <input class="input" id="login" formControlName="login" placeholder="Login">
                         </p>
                         <p>
                             <label for="userName">Name:</label>
-                            <input class="input" id="userName" [value]="userName" placeholder="Name">
+                            <input class="input" id="userName" name="userName" placeholder="Name"
+                                formControlName="userName" [class.error]="profileForm.get('userName')?.invalid && profileForm.get('userName')?.touched">
+                            @if (profileForm.get('userName')?.hasError('required') && profileForm.get('userName')?.touched) {
+                                <small class="error-message">Поле обязательно!</small>
+                            }
+                            @if (profileForm.get('userName')?.hasError('minLength') && profileForm.get('userName')?.touched) {
+                                <small class="error-message">Минимальное значение 2 символов!</small>
+                            }
                         </p>
                         <p>
                             <label for="email">Email:</label>
-                            <input class="input" id="email" [value]="email" placeholder="Email">
+                            <input class="input" id="email" formControlName="email" placeholder="Email">
                         </p>
                     </div>
                 </div>
@@ -37,8 +45,7 @@
 
             <!-- #region Кнопки управления (под всем) -->
             <div class="control-btn">
-                <button class="button-confirm" type="submit">Сохранить
-                    <!-- {{isLoading ? 'Сохранение...' : 'Сохранить'}} -->
+                <button class="button-confirm" type="submit" [disabled]="profileForm.invalid || !isLoading">{{isLoading ?  'Сохранить': 'Сохранение...'}}
                 </button>
             </div>
             <!-- #endregion -->
