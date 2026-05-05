@@ -3,7 +3,8 @@ using IdentityHub.BFF.Clients.Auth;
 using IdentityHub.BFF.Clients.Identity;
 using IdentityHub.BFF.Features.Auth.SRPChallenge;
 using IdentityHub.BFF.Features.Auth.SRPVerify;
-using IdentityHub.BFF.Features.Profile;
+using IdentityHub.BFF.Features.Profile.GetGeneralInfo;
+using IdentityHub.BFF.Features.Profile.Update.UpdateUserName;
 using IdentityHub.BFF.Features.PublicKey;
 using IdentityHub.BFF.Features.Registration;
 using IdentityHub.BFF.Features.User.GenerateCode;
@@ -66,6 +67,7 @@ namespace IdentityHub.BFF
         public static WebApplication AddEndpoints(this WebApplication webApplication)
         {
             webApplication.MapGetGeneralInfo();
+            webApplication.MapUpdateUserName();
             webApplication.MapSRPChallenge();
             webApplication.MapSRPVerify();
             webApplication.MapRegistration();

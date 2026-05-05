@@ -7,6 +7,7 @@ namespace IdentityHub.BFF.Clients.Identity
     public interface IIdentityService
     {
         Task<Result<ProfileGeneralInfoResponse?>> GetGeneralInfoAsync(string userId);
+        Task<Result> UpdateUserNameAsync(UpdateUserNameRequest request);
         Task<Result> RegistrationAsync(RegisterUserRequest request);
         Task<Result> GenerateCodeAsync(string login);
         Task<Result> VerifyConfirmCodeAsync(string login, int code);
