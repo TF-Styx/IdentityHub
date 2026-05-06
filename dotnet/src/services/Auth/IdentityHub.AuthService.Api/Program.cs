@@ -21,7 +21,7 @@ namespace IdentityHub.AuthService.Api
                         name: "AllowSpecificOrigin",
                             policy =>
                             {
-                                policy.WithOrigins("http://localhost:5077")
+                                policy.WithOrigins("http://127.0.0.1:5077")
                                       .WithOrigins("http://localhost:5005")
                                       .AllowAnyHeader()
                                       .AllowAnyMethod()

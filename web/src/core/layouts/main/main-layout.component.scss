@@ -1,0 +1,139 @@
+// main-layout.component.scss
+.app-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.main-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background-color: var(--bg-form);
+  border-bottom: 1px solid var(--color-border);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+
+  nav {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .nav-link {
+    color: var(--text-primary);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 15px;
+    padding: 8px 16px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background-color: var(--bg-input);
+      color: var(--color-accent);
+    }
+
+    &.home {
+      font-weight: 600;
+      font-size: 16px;
+    }
+  }
+}
+
+.main-content {
+  flex: 1;
+  padding: 24px;
+  margin-top: 60px; // Отступ = высоте header
+  min-height: calc(100vh - 110px); // Учёт header + footer
+}
+
+.main-footer {
+  height: 50px;
+  background-color: var(--bg-form);
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 24px;
+
+  p {
+    color: var(--text-secondary);
+    margin: 0;
+    font-weight: 400;
+    font-size: 14px;
+  }
+}
+
+// // Первый вариант
+// .app-layout {
+//   display: flex;
+//   flex-direction: column;
+//   min-height: 100vh;
+// }
+
+// .main-header {
+//   position: fixed;        // Фиксируем header
+//   top: 0;                 // Прижимаем к верху
+//   left: 0;                // Прижимаем к левому краю
+//   right: 0;               // Прижимаем к правому краю
+//   height: 50px;
+//   background-color: #ADD8E6;
+//   border: 2px solid black;
+//   box-shadow: 4px 4px black;
+//   z-index: 1000;          // Поверх всего контента
+//   display: flex;
+//   align-items: center;
+//   padding: 0 20px;
+
+//   nav {
+//     width: 100%;
+//     display: flex;
+//     justify-content: space-between;
+//     align-items: center;
+//   }
+
+//   a {
+//     color: black;
+//     text-decoration: none;
+//     font-weight: 500;
+//     font-size: 16px;
+//     transition: all 0.2s ease;
+
+//     &:hover {
+//       text-decoration: underline;
+//       text-underline-offset: 4px;
+//     }
+//   }
+// }
+
+// .main-content {
+//   flex: 1;
+//   padding: 20px;
+//   margin-top: 50px;       // ВАЖНО: отступ сверху = высоте header
+// }
+
+// .main-footer {
+//   height: 50px;
+//   background-color: #ADD8E6;
+//   border: 2px solid black;
+//   box-shadow: 4px 4px black;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   padding: 0 20px;
+
+//   p {
+//     color: black;
+//     margin: 0;
+//     font-weight: 500;
+//   }
+// }

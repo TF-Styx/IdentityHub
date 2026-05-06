@@ -1,0 +1,34 @@
+:root {
+  /* Фон */
+  --bg-main: #0b1120;       // Основной фон страницы
+  --bg-form: #151e32;       // Фон карточек/форм
+  --bg-input: #1e293b;      // Фон полей ввода
+
+  /* Текст */
+  --text-primary: #f8fafc;  // Основной текст, заголовки
+  --text-secondary: #94a3b8;// Второстепенный текст, подписи
+  --text-input: #e2e8f0;    // Текст внутри input
+  --text-placeholder: #64748b; // Placeholder в input
+
+  /* Акценты и состояния */
+  --color-accent: #3b82f6;  // Фокус, ссылки, активные элементы
+  --color-error: #ef4444;   // Ошибки валидации
+  --color-border: #334155;  // Границы полей
+}
+
+// // #region Фон и цвета
+
+// $color-bg: #1A1A1A;           
+// $color-bg-card: #232e45; 
+// $color-bd-input: #0ce877;
+
+// // #endregion
+
+// // #region Текст
+
+// $color-text-primary: #f4014e;
+// $color-text-primary-sub: #00ffd5;
+// $color-text-error: #eb1818;
+// $font-size-text-error: 0.875rem;
+
+// // #endregion

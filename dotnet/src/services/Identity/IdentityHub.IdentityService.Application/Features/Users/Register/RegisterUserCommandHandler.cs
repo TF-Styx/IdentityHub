@@ -1,6 +1,6 @@
-﻿using IdentityHub.IdentityService.Domain.Enums;
+﻿using IdentityHub.IdentityService.Application.Abstracts;
+using IdentityHub.IdentityService.Domain.Enums;
 using IdentityHub.IdentityService.Domain.Models;
-using IdentityHub.IdentityService.Infrastructure.Persistence.Contexts;
 using MediatR;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -8,9 +8,9 @@ using Shared.Kernel.Results;
 
 namespace IdentityHub.IdentityService.Application.Features.Users.Register
 {
-    public sealed class RegisterUserCommandHandler(IdentityContext identityContext) : IRequestHandler<RegisterUserCommand, Result>
+    public sealed class RegisterUserCommandHandler(IApplicationDbContext identityContext) : IRequestHandler<RegisterUserCommand, Result>
     {
-        private readonly IdentityContext _identityContext = identityContext;
+        private readonly IApplicationDbContext _identityContext = identityContext;
 
         public async Task<Result> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
         {

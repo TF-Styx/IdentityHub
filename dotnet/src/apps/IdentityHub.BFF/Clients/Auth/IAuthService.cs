@@ -9,6 +9,6 @@ namespace IdentityHub.BFF.Clients.Auth
     {
         Task<Result<SRPChallengeResponse>> SRPChallenge(SRPChallengeRequest request);
         Task<Result<AuthResponse>> SRPVerify(SRPVerifyRequest request);
-        Task<Result<PublicKeyResponse>> GetCryptoConfig();
+        Task<Result<string>> GetCryptoConfig();
     }
 }

@@ -1,4 +1,4 @@
-import { toBase64, fromBase64 } from '@/shared/lib/base64';
+import { toBase64, fromBase64 } from '../../../shared/lib/base64';
 
 export class SecureDataService {
     public readonly NONCE_SIZE = 12;

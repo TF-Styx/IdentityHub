@@ -1,0 +1,22 @@
+<div class="page">
+    <form class="form" [formGroup]="stepResetForm" (ngSubmit)="onSubmit()">
+        <div class="title">Password</div>
+
+        <input class="input" id="newPassword" name="newPassword" placeholder="New Password" type="password" 
+            formControlName="newPassword" [class.error]="stepResetForm.get('newPassword')?.invalid && stepResetForm.get('newPassword')?.touched">
+        @if (stepResetForm.get('newPassword')?.hasError('required') && stepResetForm.get('newPassword')?.touched) {
+            <small class="error-message">Поле обязательно!</small>
+        }
+        
+        <input class="input" id="confirmPassword" name="confirmPassword" placeholder="Confirm Password" type="password" 
+            formControlName="confirmPassword" [class.error]="stepResetForm.get('confirmPassword')?.invalid && stepResetForm.get('confirmPassword')?.touched">
+            @if (stepResetForm.get('confirmPassword')?.hasError('required') && stepResetForm.get('confirmPassword')?.touched) {
+                <small class="error-message">Поле обязательно!</small>
+            }
+            @if (stepResetForm.hasError('mismatch') && stepResetForm.get('confirmPassword')?.touched) {
+                <small class="error-message">Пароли не совпадают!</small>
+            }
+
+        <button class="button-confirm" type="submit" [disabled]="stepResetForm.invalid || isLoading">{{isLoading ? 'Сохранение...' : 'Сохранить пароль'}}</button>
+    </form>
+</div>

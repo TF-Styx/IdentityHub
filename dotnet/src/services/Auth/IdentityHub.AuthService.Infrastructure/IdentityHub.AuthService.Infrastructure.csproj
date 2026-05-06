@@ -24,6 +24,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\shared\common\Shared.Contracts\Shared.Contracts.csproj" />
+    <ProjectReference Include="..\..\..\shared\infrastructure\Shared.Redis\Shared.Redis.csproj" />
     <ProjectReference Include="..\IdentityHub.AuthService.Application\IdentityHub.AuthService.Application.csproj" />
     <ProjectReference Include="..\IdentityHub.AuthService.Domain\IdentityHub.AuthService.Domain.csproj" />
   </ItemGroup>

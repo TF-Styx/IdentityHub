@@ -157,6 +157,28 @@ namespace IdentityHub.IdentityService.Domain.Models
             return Result.Success();
         }
 
+        public Result UpdateSRP(string authData, string salt)
+        {
+            var authMethod = _authMethods.FirstOrDefault(x => x.AuthType == AuthType.SRP);
+
+            if(authMethod == null)
+                return Result.Failure(Error.Conflict($"Данный метод аутентификации '{AuthType.SRP}' не используется на вашем аккаунте!"));
+
+            var errors = new List<Error>();
+
+            var authDataResult = AuthData.Create(authData);
+
+            authDataResult.Switch(onSuccess: _ => { }, onFailure: err => errors.AddRange(err));
+
+            if (errors.Count > 0)
+                return Result.Failure(errors);
+
+            authMethod.UpdateSRP(authDataResult.Value, salt);
+            UpdateDate();
+
+            return Result.Success();
+        }
+
         #endregion
 
         #region SecureData
@@ -180,6 +202,30 @@ namespace IdentityHub.IdentityService.Domain.Models
             var secureData = SecureData.Create(this.Id, secureDataType, secureEncryptedValueResult.Value, secureEncryptedMetadataResult.Value);
 
             _secureDatas.Add(secureData);
+            UpdateDate();
+
+            return Result.Success();
+        }
+
+        public Result UpdateMainDek(string secureEncryptedValue, string algoritm, int interation, string kdfType)
+        {
+            var secureData = _secureDatas.FirstOrDefault(x => x.SecureDataType == SecureDataType.MainDek);
+
+            if (secureData == null)
+                return Result.Failure(Error.Conflict($"Данный тип секретных данных '{SecureDataType.MainDek}' ужа зарегестирован, для вашего аккаунта!"));
+
+            var errors = new List<Error>();
+
+            var secureEncryptedValueResult = EncryptedValue.Create(secureEncryptedValue);
+            var secureEncryptedMetadataResult = EncryptedMetadata.Create(algoritm, interation, kdfType);
+
+            secureEncryptedValueResult.Switch(onSuccess: _ => { }, onFailure: errors.AddRange);
+            secureEncryptedMetadataResult.Switch(onSuccess: _ => { }, onFailure: errors.AddRange);
+
+            if (errors.Count > 0)
+                return Result.Failure(errors);
+
+            secureData.Update(secureEncryptedValueResult.Value, secureEncryptedMetadataResult.Value);
             UpdateDate();
 
             return Result.Success();

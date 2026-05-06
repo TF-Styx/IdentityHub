@@ -1,0 +1,86 @@
+@if (isLoading) {
+    <div class="page">
+        <form class="form" [formGroup]="profileForm" (ngSubmit)="onUpdateUserName()">
+            <!-- Верхняя часть: аватар слева, инфо справа -->
+            <div class="profile-top">
+                <!-- #region Avatar -->
+                <div class="avatar-page">
+                    <div class="avatar-form">
+                        <img class="avatar-img" alt="Avatar">
+                        <!-- src="assets/images/Screenshot_4.png" -->
+                    </div>
+                    <div class="avatar-btn">
+                        <button type="button" class="avatar-btn-add">+</button>
+                        <button type="button" class="avatar-btn-delete">-</button>
+                    </div>
+                </div>
+                <!-- #endregion -->
+                 
+                <!-- #region General info -->
+                <div class="info-page">
+                    <div class="info-p">
+                        <p>
+                            <label for="login">Login:</label>
+                            <input class="input" id="login" formControlName="login" placeholder="Login">
+                        </p>
+                        <p>
+                            <label for="userName">Name:</label>
+                            <input class="input" id="userName" name="userName" placeholder="Name"
+                                formControlName="userName" [class.error]="profileForm.get('userName')?.invalid && profileForm.get('userName')?.touched">
+                            @if (profileForm.get('userName')?.hasError('required') && profileForm.get('userName')?.touched) {
+                                <small class="error-message">Поле обязательно!</small>
+                            }
+                            @if (profileForm.get('userName')?.hasError('minLength') && profileForm.get('userName')?.touched) {
+                                <small class="error-message">Минимальное значение 2 символов!</small>
+                            }
+                        </p>
+                        <p>
+                            <label for="email">Email:</label>
+                            <input class="input" id="email" formControlName="email" placeholder="Email">
+                        </p>
+                    </div>
+                </div>
+                <!-- #endregion -->
+            </div>
+
+            <!-- #region Кнопки управления (под всем) -->
+            <div class="control-btn">
+                <button class="button-confirm" type="submit" [disabled]="profileForm.invalid || !isLoading">{{isLoading ?  'Сохранить': 'Сохранение...'}}
+                </button>
+            </div>
+            <!-- #endregion -->
+
+            
+            <!-- #region Avatar -->
+            <!-- <div class="avatar-page">
+                <div class="avatar-form">
+                    <img class="avatar-img" src="web\src\resourses\Screenshot_4.png">
+                </div>
+                <div class="avatar-btn">
+                    <button class="avatar-btn-add">+</button>
+                    <button class="avatar-btn-delete">-</button>
+                </div>
+            </div> -->
+            <!-- #endregion -->
+             
+            <!-- #region General info -->
+            <!-- <div class="info-page">
+                <div class="info-p">
+                    <p>Login: <input class="input" [value]="login" placeholder="Login"></p>
+                    <p>Name: <input class="input" [value]="userName" placeholder="Name"></p>
+                    <p>Email: <input class="input" [value]="email" placeholder="Email"></p>
+                </div>
+            </div> -->
+            <!-- #endregion -->
+
+            <!-- #region Кнопки управления -->
+            <!-- <div class="control-btn">
+                <button class="button-confirm">Сохранить</button>
+            </div> -->
+            <!-- #endregion -->
+        </form>
+    </div>
+}
+@else {
+    <h1>Загрузка...</h1>
+}

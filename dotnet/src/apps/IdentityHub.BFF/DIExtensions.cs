@@ -3,8 +3,14 @@ using IdentityHub.BFF.Clients.Auth;
 using IdentityHub.BFF.Clients.Identity;
 using IdentityHub.BFF.Features.Auth.SRPChallenge;
 using IdentityHub.BFF.Features.Auth.SRPVerify;
+using IdentityHub.BFF.Features.Profile.GetGeneralInfo;
+using IdentityHub.BFF.Features.Profile.Update.UpdateUserName;
 using IdentityHub.BFF.Features.PublicKey;
 using IdentityHub.BFF.Features.Registration;
+using IdentityHub.BFF.Features.User.GenerateCode;
+using IdentityHub.BFF.Features.User.RecoveryAccessPassword;
+using IdentityHub.BFF.Features.User.VerifyConfirmCode;
+using IdentityHub.BFF.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace IdentityHub.BFF
@@ -14,6 +20,8 @@ namespace IdentityHub.BFF
         public static IServiceCollection AddServices(this IServiceCollection services)
         {
             services.AddMediatR(prop => prop.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
+
+            services.AddSingleton<JwtReader>();
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
             {
@@ -30,7 +38,7 @@ namespace IdentityHub.BFF
                         name: "AllowSpecificOrigin",
                             policy =>
                             {
-                                policy.WithOrigins("http://localhost:5173") // Разрешенный домен вашего фронтенда
+                                policy.WithOrigins("http://127.0.0.1:4200") // Разрешенный домен вашего фронтенда
                                       .WithOrigins("http://localhost:5012")
                                       .WithOrigins("http://localhost:5005")
                                       .AllowAnyHeader()
@@ -58,10 +66,15 @@ namespace IdentityHub.BFF
 
         public static WebApplication AddEndpoints(this WebApplication webApplication)
         {
+            webApplication.MapGetGeneralInfo();
+            webApplication.MapUpdateUserName();
             webApplication.MapSRPChallenge();
             webApplication.MapSRPVerify();
             webApplication.MapRegistration();
             webApplication.MapPublicKey();
+            webApplication.MapGenerateCode();
+            webApplication.MapVerifyConfirmCode();
+            webApplication.MapRecoveryAccessPassword();
 
             return webApplication;
         }

@@ -23,6 +23,9 @@
   <Folder Name="/src/shared/core/">
     <Project Path="src/shared/core/Shared.Kernel/Shared.Kernel.csproj" />
   </Folder>
+  <Folder Name="/src/shared/infrastructure/">
+    <Project Path="src/shared/infrastructure/Shared.Redis/Shared.Redis.csproj" />
+  </Folder>
   <Folder Name="/src/shared/security/">
     <Project Path="src/shared/security/Shared.Security.Abstraction/Shared.Security.Abstraction.csproj" />
     <Project Path="src/shared/security/Shared.Security.Cryptography/Shared.Security.Cryptography.csproj" />

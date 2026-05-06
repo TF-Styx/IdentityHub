@@ -34,16 +34,16 @@ namespace IdentityHub.BFF.Clients.Auth
             return Result<AuthResponse>.Success(dataResult!);
         }
 
-        public async Task<Result<PublicKeyResponse>> GetCryptoConfig()
+        public async Task<Result<string>> GetCryptoConfig()
         {
             var response = await httpClient.GetAsync("api/configure/public-key");
 
             if (!response.IsSuccessStatusCode)
-                return Result<PublicKeyResponse>.Failure(Error.New(ErrorCode.Create, await response.Content.ReadAsStringAsync()));
+                return Result<string>.Failure(Error.New(ErrorCode.Create, await response.Content.ReadAsStringAsync()));
 
-            var dataResult = await response.Content.ReadFromJsonAsync<PublicKeyResponse>();
+            var dataResult = await response.Content.ReadAsStringAsync();
 
-            return Result<PublicKeyResponse>.Success(dataResult!);
+            return Result<string>.Success(dataResult!);
         }
     }
 }

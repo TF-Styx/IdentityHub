@@ -34,5 +34,11 @@ namespace IdentityHub.IdentityService.Domain.Models
 
         internal static AuthMethod Create(UserId userId, AuthType authType, AuthKey authKey, AuthData? authData, string? salt)
             => new AuthMethod(AuthMethodId.New(), userId, authType, authKey, authData, salt);
+
+        internal void UpdateSRP(AuthData authData, string salt)
+        {
+            AuthData = authData;
+            Salt = salt;
+        }
     }
 }
