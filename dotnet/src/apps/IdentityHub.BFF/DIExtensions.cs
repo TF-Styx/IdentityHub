@@ -1,8 +1,10 @@
 using System.Reflection;
 using IdentityHub.BFF.Clients.Auth;
+using IdentityHub.BFF.Clients.File;
 using IdentityHub.BFF.Clients.Identity;
 using IdentityHub.BFF.Features.Auth.SRPChallenge;
 using IdentityHub.BFF.Features.Auth.SRPVerify;
+using IdentityHub.BFF.Features.Profile.Avatar;
 using IdentityHub.BFF.Features.Profile.GetGeneralInfo;
 using IdentityHub.BFF.Features.Profile.Update.UpdateUserName;
 using IdentityHub.BFF.Features.PublicKey;
@@ -17,19 +19,46 @@ namespace IdentityHub.BFF
 {
     public static class DIExtensions
     {
-        public static IServiceCollection AddServices(this IServiceCollection services)
+        public static IServiceCollection AddServices(this IServiceCollection services, WebApplicationBuilder builder)
         {
             services.AddMediatR(prop => prop.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
 
             services.AddSingleton<JwtReader>();
 
-            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
+            if (builder.Environment.IsDevelopment())
             {
-                options.Cookie.Name = "IdentityHub";
-                options.Cookie.HttpOnly = true;
-                options.Cookie.SameSite = SameSiteMode.Strict;
-                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-            });
+                builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                    .AddCookie(options =>
+                    {
+                        options.Cookie.Name = "IdentityHub";
+                        options.Cookie.Domain = null;
+                        options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest; 
+                        options.Cookie.SameSite = SameSiteMode.Lax;
+                        options.Cookie.HttpOnly = true;
+                        options.ExpireTimeSpan = TimeSpan.FromDays(7);
+                    });
+            }
+            else
+            {
+                builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                    .AddCookie(options =>
+                    {
+                        options.Cookie.Name = "IdentityHub";
+                        options.Cookie.Domain = ".terminex.ru"; 
+                        options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                        options.Cookie.SameSite = SameSiteMode.Strict;
+                        options.Cookie.HttpOnly = true;
+                        options.ExpireTimeSpan = TimeSpan.FromDays(7);
+                    });
+            }
+
+            // services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
+            // {
+            //     options.Cookie.Name = "IdentityHub";
+            //     options.Cookie.HttpOnly = true;
+            //     options.Cookie.SameSite = SameSiteMode.Strict;
+            //     options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+            // });
 
             services.AddCors(options =>
             {
@@ -61,11 +90,16 @@ namespace IdentityHub.BFF
 
             services.AddHttpClient<IIdentityService, IdentityService>(client => client.BaseAddress = new Uri(identityServiceHttp!));
 
+            var minervaServiceHttp = configuration["MinervaService"];
+
+            services.AddHttpClient<IFileService, FileService>(client => client.BaseAddress = new Uri(minervaServiceHttp!));
+
             return services;
         }
 
         public static WebApplication AddEndpoints(this WebApplication webApplication)
         {
+            webApplication.MapAvatar();
             webApplication.MapGetGeneralInfo();
             webApplication.MapUpdateUserName();
             webApplication.MapSRPChallenge();

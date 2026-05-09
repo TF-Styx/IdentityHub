@@ -1,0 +1,23 @@
+<div class="image-page">
+  <div class="image-form">
+    <img 
+      class="image" 
+      [src]="imagePreviewUrl || 'assets/images/Screenshot_4.png'" 
+      alt="Avatar" 
+    />
+  </div>
+
+  <div class="image-btn">
+    <input 
+      type="file" 
+      #fileInput 
+      hidden 
+      accept="image/png,image/jpeg" 
+      (change)="onFileSelected($event)" 
+    />
+    
+    <button type="button" class="image-btn-add" (click)="fileInput.click()">+</button>
+    
+    <button type="button" class="image-btn-delete" (click)="clearSelection()" [disabled]="!selectedFile">-</button>
+  </div>
+</div>

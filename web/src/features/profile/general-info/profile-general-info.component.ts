@@ -2,13 +2,19 @@ import { CommonModule } from "@angular/common";
 import { ChangeDetectorRef, Component, inject, OnInit } from "@angular/core";
 import { FormBuilder, FormGroup, Validators, ɵInternalFormsSharedModule, ReactiveFormsModule } from "@angular/forms";
 import { ProfileGeneralInfoApi } from "./profile-general-info.api";
+import { FileUploadComponent } from "../../file/file-upload.component";
+import { UploadApi } from "../../file/file-upload.api";
+import { AvatarStateService } from "../../file/services/avatar-state.service";
+import { firstValueFrom } from "rxjs";
 
-@Component({selector: 'general-info', templateUrl: './profile-general-info.component.html', styleUrls: ['./profile-general-info.component.scss'], standalone: true, imports: [CommonModule, ɵInternalFormsSharedModule, ReactiveFormsModule]})
+@Component({selector: 'general-info', templateUrl: './profile-general-info.component.html', styleUrls: ['./profile-general-info.component.scss'], standalone: true, imports: [CommonModule, ɵInternalFormsSharedModule, ReactiveFormsModule, FileUploadComponent]})
 
 export class ProfileGeneralInfoComponent implements OnInit {
-    private formBuilder: FormBuilder = inject(FormBuilder)
-    private http: ProfileGeneralInfoApi = inject(ProfileGeneralInfoApi)
-    private changeDetectorRef: ChangeDetectorRef = inject(ChangeDetectorRef)
+    private formBuilder: FormBuilder = inject(FormBuilder);
+    private http: ProfileGeneralInfoApi = inject(ProfileGeneralInfoApi);
+    private changeDetectorRef: ChangeDetectorRef = inject(ChangeDetectorRef);
+    private fileUploadApi: UploadApi = inject(UploadApi);
+    private avatarStateService: AvatarStateService = inject(AvatarStateService);
 
     profileForm: FormGroup;
     errorMessage: string | null = null;
@@ -16,6 +22,7 @@ export class ProfileGeneralInfoComponent implements OnInit {
     isLoading: boolean = false
 
     private readonly userNameMinLength = 2;
+    private userNameDB: string | null = null;
 
     constructor() {
         this.profileForm = this.formBuilder.group({
@@ -34,6 +41,7 @@ export class ProfileGeneralInfoComponent implements OnInit {
         .subscribe({
             next: response => {
                 this.profileForm.patchValue(response);
+                this.userNameDB = response.userName;
                 this.isLoading = true;
                 this.changeDetectorRef.detectChanges();
             }, 
@@ -48,11 +56,32 @@ export class ProfileGeneralInfoComponent implements OnInit {
         if (this.profileForm.invalid)
             return;
 
-        this.http.updateUserName({userName: this.profileForm.value.userName})
-            .subscribe({
-                next: () => alert('Изменение имени пользователя прошло успешно!'),
-                error: errors => console.log(errors)
-                
-            });
+        const newUserName: string = this.profileForm.value.userName;
+
+        if (this.userNameDB != newUserName) {
+            this.http.updateUserName({userName: newUserName})
+                .subscribe({
+                    next: () => {
+                        alert('Изменение имени пользователя прошло успешно!')
+                        this.userNameDB = newUserName
+                    },
+                    error: errors => console.log(errors)
+                });
+        }
+        
+        const file = this.avatarStateService.getFile();
+
+        if (file == null) {
+            alert('Файл не был выбран!');
+            return;
+        }
+        
+        const fileName: string = file?.name as string;
+
+        const fromData = new FormData();
+        fromData.append('File', file, fileName);
+        console.log(`File - ${file}, FileName - ${fileName}, FromData - ${fromData}`);
+
+        await firstValueFrom(this.fileUploadApi.uploadAvatar(fromData));
     }
 }

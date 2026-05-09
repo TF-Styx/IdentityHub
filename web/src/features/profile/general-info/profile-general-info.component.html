@@ -4,16 +4,7 @@
             <!-- Верхняя часть: аватар слева, инфо справа -->
             <div class="profile-top">
                 <!-- #region Avatar -->
-                <div class="avatar-page">
-                    <div class="avatar-form">
-                        <img class="avatar-img" alt="Avatar">
-                        <!-- src="assets/images/Screenshot_4.png" -->
-                    </div>
-                    <div class="avatar-btn">
-                        <button type="button" class="avatar-btn-add">+</button>
-                        <button type="button" class="avatar-btn-delete">-</button>
-                    </div>
-                </div>
+                <app-file-upload></app-file-upload>
                 <!-- #endregion -->
                  
                 <!-- #region General info -->
@@ -48,35 +39,6 @@
                 <button class="button-confirm" type="submit" [disabled]="profileForm.invalid || !isLoading">{{isLoading ?  'Сохранить': 'Сохранение...'}}
                 </button>
             </div>
-            <!-- #endregion -->
-
-            
-            <!-- #region Avatar -->
-            <!-- <div class="avatar-page">
-                <div class="avatar-form">
-                    <img class="avatar-img" src="web\src\resourses\Screenshot_4.png">
-                </div>
-                <div class="avatar-btn">
-                    <button class="avatar-btn-add">+</button>
-                    <button class="avatar-btn-delete">-</button>
-                </div>
-            </div> -->
-            <!-- #endregion -->
-             
-            <!-- #region General info -->
-            <!-- <div class="info-page">
-                <div class="info-p">
-                    <p>Login: <input class="input" [value]="login" placeholder="Login"></p>
-                    <p>Name: <input class="input" [value]="userName" placeholder="Name"></p>
-                    <p>Email: <input class="input" [value]="email" placeholder="Email"></p>
-                </div>
-            </div> -->
-            <!-- #endregion -->
-
-            <!-- #region Кнопки управления -->
-            <!-- <div class="control-btn">
-                <button class="button-confirm">Сохранить</button>
-            </div> -->
             <!-- #endregion -->
         </form>
     </div>

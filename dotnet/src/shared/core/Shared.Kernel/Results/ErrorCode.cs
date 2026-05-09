@@ -16,5 +16,6 @@
         ValueObject = 11,
         Redis = 12,
         ConfirmCode = 13,
+        Upload = 14,
     }
 }
