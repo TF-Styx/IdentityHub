@@ -1,0 +1,61 @@
+@use '../../styles.scss';
+
+.image-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: var(--bg-main);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    padding: 10px;
+    flex-shrink: 0;
+}
+
+.image-form {
+    background-color: var(--bg-form);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    margin-bottom: 10px;
+    width: 200px;
+    height: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.image-btn {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.image-btn-add,
+.image-btn-delete {
+    flex: 1;
+    max-width: 45px;
+    width: 30px;
+    height: 30px;
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    background-color: var(--bg-form);
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-size: 18px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.2s;
+
+    &:hover {
+        background-color: var(--color-accent);
+        color: white;
+    }
+}
