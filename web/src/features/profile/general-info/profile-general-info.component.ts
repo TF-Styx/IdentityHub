@@ -22,6 +22,7 @@ export class ProfileGeneralInfoComponent implements OnInit {
     isLoading: boolean = false
 
     private readonly userNameMinLength = 2;
+    private userNameDB: string | null = null;
 
     constructor() {
         this.profileForm = this.formBuilder.group({
@@ -40,6 +41,7 @@ export class ProfileGeneralInfoComponent implements OnInit {
         .subscribe({
             next: response => {
                 this.profileForm.patchValue(response);
+                this.userNameDB = response.userName;
                 this.isLoading = true;
                 this.changeDetectorRef.detectChanges();
             }, 
@@ -54,11 +56,18 @@ export class ProfileGeneralInfoComponent implements OnInit {
         if (this.profileForm.invalid)
             return;
 
-        this.http.updateUserName({userName: this.profileForm.value.userName})
-            .subscribe({
-                next: () => alert('Изменение имени пользователя прошло успешно!'),
-                error: errors => console.log(errors)
-            });
+        const newUserName: string = this.profileForm.value.userName;
+
+        if (this.userNameDB != newUserName) {
+            this.http.updateUserName({userName: newUserName})
+                .subscribe({
+                    next: () => {
+                        alert('Изменение имени пользователя прошло успешно!')
+                        this.userNameDB = newUserName
+                    },
+                    error: errors => console.log(errors)
+                });
+        }
         
         const file = this.avatarStateService.getFile();
 

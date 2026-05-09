@@ -10,8 +10,6 @@ export class FileUploadComponent {
     selectedFile: File | null = null;
     imagePreviewUrl: string | null = null;
 
-    // constructor(private uploadService: Upload)
-
     onFileSelected(event: Event): void {
         const input = event.target as HTMLInputElement;
         const file = input.files?.[0];
@@ -19,26 +17,12 @@ export class FileUploadComponent {
         if (!file) 
             return;
 
-        // ✅ Валидация
-        const allowedTypes = ['image/png', 'image/jpeg'];
-        if (!allowedTypes.includes(file.type)) {
-            alert('Разрешены только PNG и JPEG');
-            input.value = ''; // сброс инпута
-            return;
-        }
-        if (file.size > 5 * 1024 * 1024) {
-            alert('Максимальный размер: 5 МБ');
-            input.value = '';
-            return;
-        }
-
-        // ⚠️ Очищаем предыдущий URL, чтобы не было утечки памяти
         if (this.imagePreviewUrl) {
             URL.revokeObjectURL(this.imagePreviewUrl);
         }
 
         this.selectedFile = file;
-        this.imagePreviewUrl = URL.createObjectURL(file); // Генерируем URL для <img>
+        this.imagePreviewUrl = URL.createObjectURL(file);
         this.avatarState.setFile(file);
     }
 
@@ -49,7 +33,6 @@ export class FileUploadComponent {
         this.selectedFile = null;
         this.imagePreviewUrl = null;
         
-        // Сбрасываем значение скрытого инпута (чтобы можно было выбрать тот же файл повторно)
         const input = document.querySelector('input[type="file"]') as HTMLInputElement;
         if (input) 
             input.value = '';

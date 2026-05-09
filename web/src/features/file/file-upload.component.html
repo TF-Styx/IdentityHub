@@ -1,6 +1,5 @@
 <div class="image-page">
   <div class="image-form">
-    <!-- Показываем превью, если оно есть. Иначе — заглушку -->
     <img 
       class="image" 
       [src]="imagePreviewUrl || 'assets/images/Screenshot_4.png'" 
@@ -9,7 +8,6 @@
   </div>
 
   <div class="image-btn">
-    <!-- Скрытый инпут. Именно он ловит выбор файла -->
     <input 
       type="file" 
       #fileInput 
@@ -18,22 +16,8 @@
       (change)="onFileSelected($event)" 
     />
     
-    <!-- Кнопка "+" вызывает клик по скрытому инпуту -->
     <button type="button" class="image-btn-add" (click)="fileInput.click()">+</button>
     
-    <!-- Кнопка "-" сбрасывает выбор. Отключена, если файла нет -->
     <button type="button" class="image-btn-delete" (click)="clearSelection()" [disabled]="!selectedFile">-</button>
   </div>
 </div>
-
-<!-- <input class="input"
-  type="file" 
-  accept="image/png,image/jpeg" 
-  (change)="onFileSelected($event)" 
-  #fileInput
-/> -->
-<!-- <button (click)="uploadFile()" [disabled]="!selectedFile">Отправить</button> -->
-
-<!-- <div *ngIf="previewUrl">
-  <img [src]="previewUrl" alt="preview" style="max-width: 200px; margin-top: 10px;" />
-</div> -->
