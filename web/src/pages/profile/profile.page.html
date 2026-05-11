@@ -1,1 +1,16 @@
-<general-info></general-info>
+@if (!isLoaded()) {
+    <h1>Загрузка...</h1>
+} @else {
+    <div class="profile-container">
+    <app-file-upload
+        [currentImageUrl]="avatarUrl()"
+        (fileSelected)="onAvatarSelected($event)"/>
+
+    <general-info [userData]="userData()"
+        (save)="onSaveGeneralInfo($event)"
+        (cancel)="onCancel()"/>
+
+    @if (isSubmitting()) { <h1>isSubmitting</h1> }
+    @if (message()) { <h1>{{message!}}</h1> }
+    </div>
+}

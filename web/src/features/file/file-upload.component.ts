@@ -1,14 +1,24 @@
 import { CommonModule } from "@angular/common";
-import { Component, inject } from "@angular/core";
-import { AvatarStateService } from "./services/avatar-state.service";
+import { Component, ElementRef, EventEmitter, inject, Input, OnChanges, OnDestroy, Output, SimpleChanges, ViewChild } from "@angular/core";
 
 @Component({selector: 'app-file-upload', templateUrl: './file-upload.component.html', styleUrls: ['./file-upload.component.scss'], standalone: true, imports: [CommonModule]})
 
-export class FileUploadComponent {
-    private avatarState: AvatarStateService = inject(AvatarStateService);
+export class FileUploadComponent implements OnChanges, OnDestroy {
+    @Input() currentImageUrl: string | null = null;
+    @Output() fileSelected = new EventEmitter<File>();
+    @Output() fileCleared = new EventEmitter<void>();
+
+    @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
 
     selectedFile: File | null = null;
     imagePreviewUrl: string | null = null;
+
+    ngOnChanges(changes: SimpleChanges): void {
+        if (changes['currentImageUrl'] && !this.selectedFile) {
+            this.cleanupPreview()
+            this.imagePreviewUrl = changes['currentImageUrl'].currentValue
+        }
+    }
 
     onFileSelected(event: Event): void {
         const input = event.target as HTMLInputElement;
@@ -17,29 +27,30 @@ export class FileUploadComponent {
         if (!file) 
             return;
 
-        if (this.imagePreviewUrl) {
-            URL.revokeObjectURL(this.imagePreviewUrl);
-        }
+        this.cleanupPreview();
 
         this.selectedFile = file;
         this.imagePreviewUrl = URL.createObjectURL(file);
-        this.avatarState.setFile(file);
+
+        this.fileSelected.emit(file);
     }
 
     clearSelection(): void {
-        if (this.imagePreviewUrl) {
-            URL.revokeObjectURL(this.imagePreviewUrl);
-        }
+        this.cleanupPreview();
+
         this.selectedFile = null;
-        this.imagePreviewUrl = null;
-        
-        const input = document.querySelector('input[type="file"]') as HTMLInputElement;
-        if (input) 
-            input.value = '';
+        this.imagePreviewUrl = this.currentImageUrl;
+
+        this.fileInput.nativeElement.value = '';
+        this.fileCleared.emit();
+    }
+
+    private cleanupPreview(): void {
+        if (this.imagePreviewUrl?.startsWith('blob:'))
+            URL.revokeObjectURL(this.imagePreviewUrl);
     }
 
     ngOnDestroy(): void {
-        if (this.imagePreviewUrl)
-            URL.revokeObjectURL(this.imagePreviewUrl);
+        this.cleanupPreview();
     }
 }

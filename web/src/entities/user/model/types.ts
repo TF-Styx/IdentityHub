@@ -11,3 +11,13 @@ export interface AuthSession {
   user?: User;
   // можно добавить expiresAt, roles и т.д.
 }
+
+export interface UpdateUserNameRequest {
+  userName: string
+}
+
+export interface ProfileGeneralInfoResponse {
+  login: string,
+  userName: string,
+  email: string
+}
