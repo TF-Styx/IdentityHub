@@ -1,9 +1,7 @@
 ﻿using IdentityHub.IdentityService.Domain.Models;
-using IdentityHub.IdentityService.Domain.ValueObjects.Role;
 using IdentityHub.IdentityService.Domain.ValueObjects.User;
 using IdentityHub.IdentityService.Infrastructure.Persistence.Constants;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace IdentityHub.IdentityService.Infrastructure.Persistence.Configurations
@@ -53,6 +51,15 @@ namespace IdentityHub.IdentityService.Infrastructure.Persistence.Configurations
 
             builder.Property(s => s.DateUpdate)
                    .HasColumnName("DateUpdate");
+
+            builder.Property(a => a.Avatar)
+                   .HasColumnName("Avatar")
+                   .UseCollation(PostgresConstants.COLLATION_NAME)
+                   .HasConversion
+                         (
+                            outDB => outDB.HasValue ? outDB.Value.Value : null, 
+                            inDB => string.IsNullOrWhiteSpace(inDB) ? null : new Avatar(inDB)
+                         );
 
             builder.HasOne<Status>().WithMany().HasForeignKey(user => user.StatusId).OnDelete(DeleteBehavior.Restrict);
 

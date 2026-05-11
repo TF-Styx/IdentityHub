@@ -8,7 +8,7 @@ namespace IdentityHub.BFF.Clients.File
     {
         private readonly HttpClient _httpClient = httpClient;
         
-        public async Task<Result<AvatarResponse>> UploadAvatarAsync(Stream fileStream, string contentType, string fileName, string userId)
+        public async Task<Result<AvatarResponse>> UploadAvatarAsync(string bucketName, Stream fileStream, string contentType, string fileName, string userId)
         {
             // string BucketName, string AdditionalName, string? SubFolder
 
@@ -18,7 +18,7 @@ namespace IdentityHub.BFF.Clients.File
             streamContent.Headers.ContentType = new MediaTypeHeaderValue(contentType);
 
             formData.Add(streamContent, "File", fileName);
-            formData.Add(new StringContent("identity-hub"), "BucketName");
+            formData.Add(new StringContent(bucketName), "BucketName");
             formData.Add(new StringContent("Avatar"), "AdditionalName");
             formData.Add(new StringContent($"/{userId}/avatar"), "SubFolder");
 

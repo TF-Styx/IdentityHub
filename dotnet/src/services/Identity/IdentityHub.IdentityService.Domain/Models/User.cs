@@ -18,6 +18,7 @@ namespace IdentityHub.IdentityService.Domain.Models
         public DateTime DateRegistration { get; private set; }
         public DateTime? DateEntry { get; private set; }
         public DateTime DateUpdate { get; private set; }
+        public Avatar? Avatar { get; private set; }
 
         public StatusId StatusId { get; private set; }
 
@@ -93,6 +94,12 @@ namespace IdentityHub.IdentityService.Domain.Models
 
         private void UpdateDate()
             => DateUpdate = DateTime.UtcNow;
+
+        public void AddAvatar(Avatar avatar)
+        {
+            Avatar = avatar;
+            UpdateDate();
+        }
 
         #endregion
 

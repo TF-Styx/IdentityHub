@@ -20,6 +20,16 @@ namespace IdentityHub.BFF.Clients.Identity
             return Result<ProfileGeneralInfoResponse?>.Success(await response.Content.ReadFromJsonAsync<ProfileGeneralInfoResponse>());
         }
 
+        public async Task<Result> UploadAvatar(UploadAvatarRequest request)
+        {
+            var response = await httpClient.PatchAsJsonAsync("api/users/upload-avatar", request, _jsonSerializerOptions);
+
+            if (!response.IsSuccessStatusCode)
+                return Result.Failure(Error.New(ErrorCode.Upload, await response.Content.ReadAsStringAsync()));
+
+            return Result.Success();
+        }
+
         public async Task<Result> UpdateUserNameAsync(UpdateUserNameRequest request)
         {
             var response = await httpClient.PatchAsJsonAsync($"api/users/update-name", request, _jsonSerializerOptions);

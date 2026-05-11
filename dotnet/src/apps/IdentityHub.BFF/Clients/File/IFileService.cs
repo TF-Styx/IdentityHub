@@ -5,6 +5,6 @@ namespace IdentityHub.BFF.Clients.File
 {
     public interface IFileService
     {
-        Task<Result<AvatarResponse>> UploadAvatarAsync(Stream fileStream, string contentType, string fileName, string userId);
+        Task<Result<AvatarResponse>> UploadAvatarAsync(string bucketName, Stream fileStream, string contentType, string fileName, string userId);
     }
 }

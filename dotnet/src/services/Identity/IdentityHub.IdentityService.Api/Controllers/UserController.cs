@@ -8,6 +8,7 @@ using IdentityHub.IdentityService.Application.Features.Users.VerifyConfirmCode;
 using IdentityHub.IdentityService.Application.Features.Users.RecoveryAccess;
 using IdentityHub.IdentityService.Application.Features.Users.GetGeneralInfo;
 using IdentityHub.IdentityService.Application.Features.Users.UpdateUserName;
+using IdentityHub.IdentityService.Application.Features.Users.UploadAvatar;
 
 namespace IdentityHub.IdentityService.Api.Controllers
 {
@@ -113,6 +114,20 @@ namespace IdentityHub.IdentityService.Api.Controllers
         public async Task<IActionResult> UpdateUserName([FromBody] UpdateUserNameRequest request, CancellationToken cancellationToken = default)
         {
             var command = new UpdateUserNameCommand(Guid.Parse(request.UserId), request.UserName);
+
+            var result = await _mediator.Send(command, cancellationToken);
+
+            return result.Match<IActionResult>
+                (
+                    onSuccess: () => Ok(),
+                    onFailure: errors => BadRequest(errors)
+                );
+        }
+
+        [HttpPatch("upload-avatar")]
+        public async Task<IActionResult> UploadAvatar([FromBody] UploadAvatarRequest request, CancellationToken cancellationToken = default)
+        {
+            var command = new UploadAvatarCommand(Guid.Parse(request.UserId), request.BucketName, request.FileName);
 
             var result = await _mediator.Send(command, cancellationToken);
 
