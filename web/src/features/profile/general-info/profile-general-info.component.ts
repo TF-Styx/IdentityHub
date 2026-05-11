@@ -1,7 +1,7 @@
 import { CommonModule } from "@angular/common";
 import { Component, EventEmitter, inject, Input, OnChanges, OnInit, Output, SimpleChanges } from "@angular/core";
 import { FormBuilder, FormGroup, Validators, ɵInternalFormsSharedModule, ReactiveFormsModule } from "@angular/forms";
-import { ProfileGeneralInfoResponse } from "./types";
+import { ProfileGeneralInfoResponse } from "../../../entities/user/model/types";
 
 @Component({
     selector: 'general-info', 
