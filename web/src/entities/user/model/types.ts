@@ -19,5 +19,6 @@ export interface UpdateUserNameRequest {
 export interface ProfileGeneralInfoResponse {
   login: string,
   userName: string,
-  email: string
+  email: string,
+  avatar?: string
 }

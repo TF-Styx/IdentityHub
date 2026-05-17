@@ -31,9 +31,10 @@ export class ProfilePage implements OnInit {
 
     private loadData(): void {
         this.profileApi.getProfileGeneralInfo().subscribe({
-        next: (profile) => {
+        next: (profile: any) => {
             this.userData.set(profile);
-            // this.avatarUrl.set(profile.avatarUrl || null);
+            this.avatarUrl.set(profile.avatar || null);
+            console.log(profile.avatar);
             this.isLoaded.set(true);
         },
         error: () => this.message.set('Ошибка загрузки профиля')
