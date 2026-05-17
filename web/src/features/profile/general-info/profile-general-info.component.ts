@@ -1,87 +1,49 @@
 import { CommonModule } from "@angular/common";
-import { ChangeDetectorRef, Component, inject, OnInit } from "@angular/core";
+import { Component, EventEmitter, inject, Input, OnChanges, OnInit, Output, SimpleChanges } from "@angular/core";
 import { FormBuilder, FormGroup, Validators, ɵInternalFormsSharedModule, ReactiveFormsModule } from "@angular/forms";
-import { ProfileGeneralInfoApi } from "./profile-general-info.api";
-import { FileUploadComponent } from "../../file/file-upload.component";
-import { UploadApi } from "../../file/file-upload.api";
-import { AvatarStateService } from "../../file/services/avatar-state.service";
-import { firstValueFrom } from "rxjs";
+import { ProfileGeneralInfoResponse } from "../../../entities/user/model/types";
 
-@Component({selector: 'general-info', templateUrl: './profile-general-info.component.html', styleUrls: ['./profile-general-info.component.scss'], standalone: true, imports: [CommonModule, ɵInternalFormsSharedModule, ReactiveFormsModule, FileUploadComponent]})
+@Component({
+    selector: 'general-info', 
+    templateUrl: './profile-general-info.component.html', 
+    styleUrls: ['./profile-general-info.component.scss'], 
+    standalone: true, 
+    imports: [CommonModule, ɵInternalFormsSharedModule, ReactiveFormsModule]
+})
 
-export class ProfileGeneralInfoComponent implements OnInit {
-    private formBuilder: FormBuilder = inject(FormBuilder);
-    private http: ProfileGeneralInfoApi = inject(ProfileGeneralInfoApi);
-    private changeDetectorRef: ChangeDetectorRef = inject(ChangeDetectorRef);
-    private fileUploadApi: UploadApi = inject(UploadApi);
-    private avatarStateService: AvatarStateService = inject(AvatarStateService);
+export class ProfileGeneralInfoComponent implements OnChanges {
+    @Input() userData: Partial<ProfileGeneralInfoResponse> | null = null;
+    @Output() save = new EventEmitter<ProfileGeneralInfoResponse>();
+    @Output() cancel = new EventEmitter<void>();
 
     profileForm: FormGroup;
-    errorMessage: string | null = null;
 
-    isLoading: boolean = false
-
-    private readonly userNameMinLength = 2;
-    private userNameDB: string | null = null;
-
-    constructor() {
-        this.profileForm = this.formBuilder.group({
+    constructor(private fb: FormBuilder) {
+        this.profileForm = this.fb.group({
             login: ['', []],
-            userName: ['', [Validators.required, Validators.minLength(this.userNameMinLength)]],
-            email: ['', []]
+            userName: ['', [Validators.required, Validators.minLength(2)]],
+            email: ['', [Validators.email]]
         });
     }
     
-    ngOnInit(): void {
-        this.getProfileGeneralInfo()
-    }
-
-    getProfileGeneralInfo(): void {
-        this.http.getProfileGeneralInfo()
-        .subscribe({
-            next: response => {
-                this.profileForm.patchValue(response);
-                this.userNameDB = response.userName;
-                this.isLoading = true;
-                this.changeDetectorRef.detectChanges();
+    ngOnChanges(changes: SimpleChanges): void {
+        if (changes['userData'] && this.userData) {
+            this.profileForm.patchValue({
+                login: this.userData.login || '',
+                userName: this.userData.userName || '',
+                email: this.userData.email || ''
             }, 
-            error: errors => {
-                console.log(errors);
-                this.isLoading = true;
-            }
-        });
+            { emitEvent: false });
+        }
     }
 
-    async onUpdateUserName(): Promise<void> {
-        if (this.profileForm.invalid)
-            return;
-
-        const newUserName: string = this.profileForm.value.userName;
-
-        if (this.userNameDB != newUserName) {
-            this.http.updateUserName({userName: newUserName})
-                .subscribe({
-                    next: () => {
-                        alert('Изменение имени пользователя прошло успешно!')
-                        this.userNameDB = newUserName
-                    },
-                    error: errors => console.log(errors)
-                });
+    onSubmit(): void {
+        if (this.profileForm.valid) {
+            this.save.emit(this.profileForm.getRawValue());
         }
-        
-        const file = this.avatarStateService.getFile();
+    }
 
-        if (file == null) {
-            alert('Файл не был выбран!');
-            return;
-        }
-        
-        const fileName: string = file?.name as string;
-
-        const fromData = new FormData();
-        fromData.append('File', file, fileName);
-        console.log(`File - ${file}, FileName - ${fileName}, FromData - ${fromData}`);
-
-        await firstValueFrom(this.fileUploadApi.uploadAvatar(fromData));
+    onCancelClick(): void {
+        this.cancel.emit();
     }
 }

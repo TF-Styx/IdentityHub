@@ -1,4 +1,6 @@
 using System.Net.Http.Headers;
+using System.Text.Json;
+using Shared.Contracts.Request.Avatar;
 using Shared.Contracts.Response.Avatar;
 using Shared.Kernel.Results;
 
@@ -7,6 +9,24 @@ namespace IdentityHub.BFF.Clients.File
     public class FileService(HttpClient httpClient) : IFileService
     {
         private readonly HttpClient _httpClient = httpClient;
+        private readonly JsonSerializerOptions _jsonSerializerOptions = new() { PropertyNameCaseInsensitive = true };
+
+        public async Task<Result<PresignedUrlResponse?>> GetPresignedUrlAsync(PresignedUrlRequest request)
+        {
+            try
+            {
+                var response = await _httpClient.PostAsJsonAsync("presigned-url", request, _jsonSerializerOptions);
+
+                if (!response.IsSuccessStatusCode)
+                    return Result<PresignedUrlResponse?>.Failure(Error.New(ErrorCode.NotFound, await response.Content.ReadAsStringAsync()));
+                    
+                return Result<PresignedUrlResponse?>.Success(await response.Content.ReadFromJsonAsync<PresignedUrlResponse>());
+            }
+            catch (Exception ex)
+            {
+                return Result<PresignedUrlResponse?>.Failure(Error.New(ErrorCode.NotFound, $"Ошибка получения: {ex.Message}"));
+            }
+        }
         
         public async Task<Result<AvatarResponse>> UploadAvatarAsync(string bucketName, Stream fileStream, string contentType, string fileName, string userId)
         {

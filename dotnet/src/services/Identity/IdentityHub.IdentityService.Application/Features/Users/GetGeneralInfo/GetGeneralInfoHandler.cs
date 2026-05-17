@@ -18,7 +18,7 @@ namespace IdentityHub.IdentityService.Application.Features.Users.GetGeneralInfo
             if (user == null)
                 return Result<ProfileGeneralInfoResponse>.Failure(Error.NotFound("Пользователь"));
 
-            var response = new ProfileGeneralInfoResponse(user.Login, user.UserName, user.Email);
+            var response = new ProfileGeneralInfoResponse(user.Login, user.UserName, user.Email, user.Avatar);
 
             return Result<ProfileGeneralInfoResponse>.Success(response);
         }

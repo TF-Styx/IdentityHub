@@ -1,1 +1,25 @@
-<general-info></general-info>
+@if (!isLoaded()) {
+    <h1>Загрузка...</h1>
+} @else {
+    <div class="page">
+        <form class="form">
+            <div class="form-content">
+                <app-file-upload class="file-component"
+                    [currentImageUrl]="avatarUrl()"
+                    (fileSelected)="onAvatarSelected($event)"/>
+
+                <general-info class="general-info-component" 
+                    [userData]="userData()"
+                    (save)="onSaveGeneralInfo($event)"
+                    (cancel)="onCancel()"/>
+
+                @if (isSubmitting()) { <h1>isSubmitting</h1> }
+                @if (message()) { <h1>{{message!}}</h1> } 
+            </div>
+            <div class="control-btn">
+                <button class="button-confirm" type="submit">Сохранить</button>
+                <button class="button-confirm" type="button">Отмена</button>
+            </div>
+        </form>
+    </div>
+}
