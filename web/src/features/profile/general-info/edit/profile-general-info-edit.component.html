@@ -1,0 +1,47 @@
+<form [formGroup]="profileForm" (ngSubmit)="onSubmit()" class="general-info-edit">
+    <div class="form-group">
+        <label for="login" class="form-label">Login:</label>
+        <input id="login"
+            type="text"
+            formControlName="login"
+            class="form-input"
+            placeholder="Login"
+            readonly/>
+    </div>
+
+    <div class="form-group">
+        <label for="userName" class="form-label">Name:</label>
+        <input id="userName"
+            type="text"
+            formControlName="userName"
+            class="form-input"
+            [class.input-error]="profileForm.get('userName')?.invalid && profileForm.get('userName')?.touched"
+            placeholder="Name"/>
+        
+        @if (profileForm.get('userName')?.hasError('required') && profileForm.get('userName')?.touched) {
+            <small class="error-message">Поле обязательно!</small>
+        }
+        @if (profileForm.get('userName')?.hasError('minlength') && profileForm.get('userName')?.touched) {
+            <small class="error-message">Минимальное значение 2 символов!</small>
+        }
+    </div>
+
+    <div class="form-group">
+        <label for="email" class="form-label">Email:</label>
+        <input id="email"
+            type="email"
+            formControlName="email"
+            class="form-input"
+            [class.input-error]="profileForm.get('email')?.invalid && profileForm.get('email')?.touched"
+            placeholder="Email"/>
+        
+        @if (profileForm.get('email')?.hasError('email') && profileForm.get('email')?.touched) {
+            <small class="error-message">Введите корректный email!</small>
+        }
+    </div>
+
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary" [disabled]="profileForm.invalid || profileForm.pristine">Сохранить</button>
+        <button type="button" class="btn btn-secondary" (click)="onCancelClick()">Отмена</button>
+    </div>
+</form>

@@ -1,0 +1,20 @@
+<div class="avatar-edit">
+    <div class="avatar-preview">
+        <img class="avatar-image" 
+            [src]="imagePreviewUrl || currentImageUrl" 
+            alt="Avatar Preview" 
+            loading="lazy"/>
+    </div>
+
+    <div class="avatar-controls">
+      <input type="file" 
+          #fileInput 
+          hidden 
+          accept="image/png,image/jpeg" 
+          (change)="onFileSelected($event)"/>
+      
+      <button type="button" class="btn btn-add" (click)="fileInput.click()" aria-label="Загрузить аватар">+</button>
+      
+      <button type="button" class="btn btn-delete" (click)="clearSelection()" [disabled]="!selectedFile" aria-label="Удалить аватар">−</button>
+    </div>
+</div>

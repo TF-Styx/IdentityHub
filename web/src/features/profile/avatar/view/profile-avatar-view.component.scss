@@ -1,0 +1,29 @@
+@use '../../../../styles.scss';
+
+.avatar-view-container {
+    display: flex;
+    justify-content: center;
+    background-color: var(--bg-main);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    padding: 10px;
+}
+
+.avatar-wrapper {
+    background-color: var(--bg-form);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    width: 200px;
+    height: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+
+    .avatar-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        margin: 10px;
+    }
+}

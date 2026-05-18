@@ -1,30 +1,86 @@
 @use '../../styles.scss';
 
-.page {
-    padding: 20px;
-    align-items: flex-start;
-}
-
-.form {
+// Главный контейнер
+.profile-layout {
     display: flex;
-    flex-direction: column; 
-    width: 80%;
-}
-
-.form-content {
-    display: flex;
-    flex-direction: row; 
-    justify-content: space-between;
-    width: 100%;
-}
-
-.control-btn {
-    display:  flex;
     flex-direction: row;
-    justify-content: space-between;
+    align-items: flex-start; // Чтобы колонки не растягивались по высоте
+    justify-content: flex-start;
+    // padding: 40px;
+    gap: 30px; // Расстояние между левом и правом
+    width: 80%;
+    margin: 0 auto;
+}
+
+// Левая колонка - Профиль
+.profile-sidebar {
+    width: 320px; // Базовая ширина
+    flex-shrink: 0; // Не сжималась
+
+    .form {
+        margin: 0; 
+        width: 100%;
+        box-sizing: border-box;
+        align-items: stretch; // Чтобы инпуты внутри были во всю ширину колонки
+    }
+}
+
+// Правая колонка - Информация
+.profile-content {
+    flex: 1; // Занимает всё оставшееся пространство
+    background-color: var(--bg-form);
+    border-radius: 12px;
+    border: 1px solid var(--color-border);
+    // padding: 20px;
+    min-height: 400px; // Временная высота, чтобы видеть блок
+}
+
+.profile-edit, .profile-view {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
     width: 100%;
 }
 
-.button-confirm {
-    width: 50%;
+.placeholder-info {
+    color: var(--text-secondary);
+    border: 2px dashed var(--color-border);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+}
+
+.btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+}
+
+.btn-primary {
+    background-color: #3b82f6 !important;
+    color: white !important;
+
+    &:hover:not(:disabled) {
+        background-color: #2563eb !important;
+    }
+}
+
+.profile-view .btn-primary {
+    width: 100%;
+    margin-top: 10px;
 }

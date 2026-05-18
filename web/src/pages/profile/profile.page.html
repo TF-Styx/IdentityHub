@@ -1,25 +1,53 @@
 @if (!isLoaded()) {
     <h1>Загрузка...</h1>
-} @else {
-    <div class="page">
-        <form class="form">
-            <div class="form-content">
-                <app-file-upload class="file-component"
-                    [currentImageUrl]="avatarUrl()"
-                    (fileSelected)="onAvatarSelected($event)"/>
+} 
+@else {
+    <div class="page profile-layout">
+        <!-- ЛЕВАЯ КОЛОНКА - Профиль -->
+        <aside class="profile-sidebar">
+            <form class="form">
+                @if (!isEditMode()) {
+                    <!-- РЕЖИМ ПРОСМОТРА -->
+                    <div class="profile-view">
+                        <app-profile-avatar-view [avatarUrl]="avatarUrl()" />
+                        <app-profile-general-info-view [userData]="userData()" />
+                        <button type="button" class="btn btn-primary" (click)="onEdit()">
+                            Редактировать профиль
+                        </button>
+                    </div>
+                } 
+                @else {
+                    <!-- РЕЖИМ РЕДАКТИРОВАНИЯ -->
+                    <div class="profile-edit">
+                        <app-profile-avatar-edit 
+                            [currentImageUrl]="avatarUrl()"
+                            (fileSelected)="onAvatarSelected($event)"
+                            (fileCleared)="pendingAvatarFile = null"/>
 
-                <general-info class="general-info-component" 
-                    [userData]="userData()"
-                    (save)="onSaveGeneralInfo($event)"
-                    (cancel)="onCancel()"/>
+                        <app-profile-general-info-edit 
+                            [userData]="userData()"
+                            (save)="onSaveGeneralInfo($event)"
+                            (cancel)="onCancel()"/>
 
-                @if (isSubmitting()) { <h1>isSubmitting</h1> }
-                @if (message()) { <h1>{{message!}}</h1> } 
+                        @if (isSubmitting()) {
+                            <p class="message-loading">Сохранение...</p>
+                        }
+                        @if (message()) {
+                            <p class="message" [class.error]="message()?.includes('Ошибка')">
+                                {{ message() }}
+                            </p>
+                        }
+                    </div>
+                }
+            </form>
+        </aside>
+
+        <!-- ПРАВАЯ КОЛОНКА - Информация -->
+        <main class="profile-content">
+            <div class="placeholder-info">
+                <h2>Дополнительная информация</h2>
+                <p>Это место пока пустует...</p>
             </div>
-            <div class="control-btn">
-                <button class="button-confirm" type="submit">Сохранить</button>
-                <button class="button-confirm" type="button">Отмена</button>
-            </div>
-        </form>
+        </main>
     </div>
 }
