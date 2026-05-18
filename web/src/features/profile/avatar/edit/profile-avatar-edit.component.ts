@@ -1,9 +1,15 @@
 import { CommonModule } from "@angular/common";
-import { Component, ElementRef, EventEmitter, inject, Input, OnChanges, OnDestroy, Output, SimpleChanges, ViewChild } from "@angular/core";
+import { Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChanges, ViewChild } from "@angular/core";
 
-@Component({selector: 'app-file-upload', templateUrl: './file-upload.component.html', styleUrls: ['./file-upload.component.scss'], standalone: true, imports: [CommonModule]})
+@Component({
+    selector: 'app-profile-avatar-edit',
+    templateUrl: './profile-avatar-edit.component.html',
+    styleUrls: ['./profile-avatar-edit.component.scss'],
+    standalone: true,
+    imports: [CommonModule]
+})
 
-export class FileUploadComponent implements OnChanges, OnDestroy {
+export class ProfileAvatarEditComponent implements OnChanges, OnDestroy {
     @Input() currentImageUrl: string | null = null;
     @Output() fileSelected = new EventEmitter<File>();
     @Output() fileCleared = new EventEmitter<void>();
@@ -14,19 +20,19 @@ export class FileUploadComponent implements OnChanges, OnDestroy {
     imagePreviewUrl: string | null = null;
 
     ngOnChanges(changes: SimpleChanges): void {
-        if (changes['currentImageUrl'] && !this.selectedFile) {
-            this.cleanupPreview()
-            this.imagePreviewUrl = changes['currentImageUrl'].currentValue
+        if (changes['currentImageUrl']?.currentValue && !this.selectedFile) {
+            this.cleanupPreview();
+            this.imagePreviewUrl = changes['currentImageUrl'].currentValue;
         }
     }
 
     onFileSelected(event: Event): void {
         const input = event.target as HTMLInputElement;
         const file = input.files?.[0];
-
-        if (!file) 
+        
+        if (!file)
             return;
-
+        
         this.cleanupPreview();
 
         this.selectedFile = file;
@@ -46,8 +52,9 @@ export class FileUploadComponent implements OnChanges, OnDestroy {
     }
 
     private cleanupPreview(): void {
-        if (this.imagePreviewUrl?.startsWith('blob:'))
+        if (this.imagePreviewUrl?.startsWith('blob:')) {
             URL.revokeObjectURL(this.imagePreviewUrl);
+        }
     }
 
     ngOnDestroy(): void {

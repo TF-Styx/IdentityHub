@@ -10,6 +10,42 @@ body, html, app-root {
   font-family: system-ui, -apple-system, sans-serif;
 }
 
+// Общие стили для форм
+.form {
+  width: fit-content;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: var(--bg-form);
+  border-radius: 12px;
+  border: 1px solid var(--color-border);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  justify-content: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.error-message {
+  color: var(--color-error);
+  font-size: 0.85rem;
+  margin-top: 4px;
+  align-self: flex-start;
+}
+
+// Ссылки
+.signup a {
+  color: var(--color-accent);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+
+  &:hover {
+    color: #60a5fa;
+    text-decoration: underline;
+  }
+}
+
 app-root {
   display: block;
   min-height: 100vh;
@@ -102,115 +138,3 @@ app-root {
     cursor: not-allowed;
   }
 }
-
-// Общие стили для форм
-.form {
-  width: fit-content;
-  margin: 0 auto;
-  padding: 32px;
-  background-color: var(--bg-form);
-  border-radius: 12px;
-  border: 1px solid var(--color-border);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-  justify-content: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 16px;
-}
-
-.error-message {
-  color: var(--color-error);
-  font-size: 0.85rem;
-  margin-top: 4px;
-  align-self: flex-start;
-}
-
-// Ссылки
-.signup a {
-  color: var(--color-accent);
-  text-decoration: none;
-  font-weight: 500;
-  transition: color 0.2s;
-
-  &:hover {
-    color: #60a5fa;
-    text-decoration: underline;
-  }
-}
-
-// // Первый вариант
-// @use './variables' as *;
-
-// .app-content {
-//   position: relative;
-//   z-index: 1; 
-// }
-
-// .form {
-//   --font-color: $color-text-primary;
-//   --font-color-sub: $color-text-primary-sub;
-//   --bg-color-input: $color-bd-input;
-//   --bg-color-body: $color-bg;
-//   background-color: $color-bg-card;
-// }
-
-// .input {
-//   color: --font-color;
-//   background-color: --bg-color-input;
-// }
-
-// .input::placeholder {
-//   color: --font-color-sub;
-//   opacity: 0.8;
-// }
-
-// body, html, app-root {
-//   margin: 0;
-//   padding: 0;
-//   height: 100%;
-//   background-color: --bg-color-body; 
-//   color: --font-color;
-//   font-family: system-ui, sans-serif;
-// }
-
-// app-root {
-//   display: block;
-//   height: 100%;
-// }
-
-// .login-page {
-//   display: flex;
-//   justify-content: center;
-//   align-items: center;
-//   min-height: 100vh;
-//   width: 100%;
-//   background-color: --bg-color-body;
-// }
-
-// // #region Сыылки
-// p {
-//   color: --font-color;
-// }
-
-// .signup a {
-//   margin-left: 5px;          /* можно перенести сюда вместо инлайн-стиля */
-//   color: #4f46e5;            /* яркий индиго */
-//   text-decoration: none;     /* убираем подчёркивание */
-//   font-weight: 500;
-//   position: relative;
-//   transition: color 0.2s ease;
-// }
-
-// .signup a:hover {
-//   color: #6366f1;            /* светлее при наведении */
-//   text-decoration: underline; /* или оставить без подчёркивания */
-//   text-underline-offset: 4px;
-// }
-
-// .signup a:focus-visible {
-//   outline: 2px solid #4f46e5;
-//   outline-offset: 2px;
-//   border-radius: 4px;
-// }
-// // #endregion
