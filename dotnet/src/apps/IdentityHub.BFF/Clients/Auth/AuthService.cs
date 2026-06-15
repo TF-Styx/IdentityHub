@@ -1,5 +1,6 @@
 using System.Text.Json;
 using Shared.Contracts.Request.SRP;
+using Shared.Contracts.Request.User;
 using Shared.Contracts.Response.Auth;
 using Shared.Contracts.Response.SRP;
 using Shared.Kernel.Results;
@@ -9,6 +10,18 @@ namespace IdentityHub.BFF.Clients.Auth
     public class AuthService(HttpClient httpClient) : IAuthService
     {
         private readonly JsonSerializerOptions _jsonSerializerOptions = new() { PropertyNameCaseInsensitive = true };
+
+        public async Task<Result<AuthResponse>> RefreshToken(RefreshTokenRequest request)
+        {
+            var response = await httpClient.PostAsJsonAsync("api/auth/refresh-token", request, _jsonSerializerOptions);
+
+            if (!response.IsSuccessStatusCode)
+                return Result<AuthResponse>.Failure(Error.New(ErrorCode.Create, await response.Content.ReadAsStringAsync()));
+
+            var dataResult = await response.Content.ReadFromJsonAsync<AuthResponse>();
+
+            return Result<AuthResponse>.Success(dataResult!);
+        }
 
         public async Task<Result<SRPChallengeResponse>> SRPChallenge(SRPChallengeRequest request)
         {

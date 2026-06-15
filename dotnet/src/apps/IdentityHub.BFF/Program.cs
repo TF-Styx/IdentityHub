@@ -1,10 +1,18 @@
-using IdentityHub.BFF;
+using System.Reflection;
+using IdentityHub.BFF.Extensions.ServiceCollections;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddOpenApi();
-builder.Services.AddAuthorization();
-builder.Services.AddServices(builder).AddHttpServices(builder.Configuration);
+var assembly = Assembly.GetExecutingAssembly();
+var configuration = builder.Configuration;
+var env = builder.Environment;
+
+builder.Services.AddOpenApi().AddAuthorization()
+    .AddServices(configuration)
+    .AddHttpClients(configuration)
+    .UseCors()
+    .AddSharedCryptoKeyASPNET(configuration)
+    .UseCookie(env);
 
 var app = builder.Build();
 
@@ -19,6 +27,6 @@ app.UseCors("AllowSpecificOrigin");
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.AddEndpoints();
+app.AddEndpoints(assembly);
 
 app.Run();
