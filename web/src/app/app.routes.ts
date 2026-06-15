@@ -5,6 +5,7 @@ import { AuthLayoutComponent } from '../core/layouts/auth/auth-layout.component'
 import { RecoveryRoutingModule } from '../features/recovery/recovery-routing.module';
 import { MainLayoutComponent } from '../core/layouts/main/main-layout.component';
 import { ProfilePage } from '../pages/profile/profile.page';
+import { guestGuard } from '../core/guards/guest.guard';
 
 export const routes: Routes = 
     [
@@ -14,9 +15,9 @@ export const routes: Routes =
             loadComponent: () => AuthLayoutComponent, 
             children: 
             [
-                {path: 'auth', loadComponent: () => AuthComponent},
+                {path: 'auth', loadComponent: () => AuthComponent, canActivate: [guestGuard]},
                 {path: 'register', loadComponent: () => RegisterComponent},
-                {path: 'recovery', loadChildren: () => RecoveryRoutingModule}
+                {path: 'recovery', loadChildren: () => RecoveryRoutingModule, canActivate: [guestGuard]}
             ]
         },
 
