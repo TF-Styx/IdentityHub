@@ -12,10 +12,11 @@ namespace IdentityHub.BFF.Services
 
             var userId = result.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Sub)!.Value;
             var login = result.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Name)!.Value;
+            var expire = DateTimeOffset.FromUnixTimeSeconds(long.Parse(result.Claims.First(x => x.Type == "exp").Value)).UtcDateTime;
 
-            return new JwtReaderDTO(userId, login);
+            return new JwtReaderDTO(userId, login, expire);
         }
     }
 
-    public sealed record JwtReaderDTO(string UserId, string Login);
+    public sealed record JwtReaderDTO(string UserId, string Login, DateTime ExpiredTime);
 }
