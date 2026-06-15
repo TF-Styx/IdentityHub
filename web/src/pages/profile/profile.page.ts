@@ -69,7 +69,7 @@ export class ProfilePage implements OnInit {
             this.profileApi.updateUserName({userName: payload.userName})
                 .subscribe({
                     next: () => {
-                        alert('Изменение имени пользователя прошло успешно!')
+                        console.log('Изменение имени пользователя прошло успешно!')
                         this.userData.update(data => ({
                             data,
                             login: data.login,
@@ -89,7 +89,7 @@ export class ProfilePage implements OnInit {
                 
                 this.avatarUrl.set(URL.createObjectURL(this.pendingAvatarFile));
                 this.pendingAvatarFile = null;
-        }
+            }
 
         this.message.set('Данные успешно сохранены');
         await this.loadData(); // перечитываем актуальные данные

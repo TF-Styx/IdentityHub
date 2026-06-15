@@ -40,7 +40,6 @@ export class RegisterComponent{
         const {userName: userName, email: email, login: login, password: password} = this.registerForm.value
 
         const publicKeyResponse = await firstValueFrom(this.registerApi.getPublicKey());
-        console.log(publicKeyResponse);
         const firstParse = JSON.parse(publicKeyResponse.encryptionKey);
         const publicKeyBase64 = typeof firstParse === 'string' 
                 ? firstParse 
@@ -84,8 +83,6 @@ export class RegisterComponent{
 
         const dek = crypto.generateRandomBytes(32);
         const encryptedDek = await crypto.encryptData(dek, kek);
-
-        console.log(`${verifierBase64}-${encryptedVerifierBase64}`);
 
         const registrationData: RegisterRequest = {
             Login: login,
