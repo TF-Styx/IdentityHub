@@ -1,8 +1,10 @@
-﻿using IdentityHub.AuthService.Application.Features.SRPChallenge;
+﻿using IdentityHub.AuthService.Application.Features.RefreshToken;
+using IdentityHub.AuthService.Application.Features.SRPChallenge;
 using IdentityHub.AuthService.Application.Features.VerifySRP;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Contracts.Request.SRP;
+using Shared.Contracts.Request.User;
 
 namespace IdentityHub.AuthService.Api.Controllers
 {
@@ -11,6 +13,24 @@ namespace IdentityHub.AuthService.Api.Controllers
     public sealed class AuthController(IMediator mediator) : Controller
     {
         private readonly IMediator _mediator = mediator;
+
+        [HttpPost("refresh-token")]
+        public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequest request, CancellationToken cancellationToken = default)
+        {
+            var command = new RefreshTokenCommand(request.RefreshToken, request.AccessToken);
+
+            var result = await _mediator.Send(command, cancellationToken);
+
+            return result.Match<IActionResult>
+                (
+                    () => Ok(result.Value),
+                    errors => BadRequest(new
+                    {
+                        Title = "Ошибка инициализации входа!",
+                        Errors = errors
+                    })
+                );
+        }
 
         [HttpPost("srp/challenge")]
         public async Task<IActionResult> SRPChallenge([FromBody] SRPChallengeRequest request, CancellationToken cancellationToken = default)
