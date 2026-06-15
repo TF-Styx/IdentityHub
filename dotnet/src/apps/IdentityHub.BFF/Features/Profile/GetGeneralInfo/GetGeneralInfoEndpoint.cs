@@ -1,7 +1,6 @@
 using MediatR;
-using IdentityHub.BFF.Services;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authentication;
 
 namespace IdentityHub.BFF.Features.Profile.GetGeneralInfo
 {
@@ -9,13 +8,14 @@ namespace IdentityHub.BFF.Features.Profile.GetGeneralInfo
     {
         public static void MapGetGeneralInfo(this IEndpointRouteBuilder app)
         {
-            app.MapGet("general-info", async (HttpContext httpContext, [FromServices] JwtReader jwtReader, [FromServices] IMediator mediator) =>
+            app.MapGet("general-info", async (HttpContext httpContext, [FromServices] IMediator mediator) =>
             {
-                var token = await httpContext.GetTokenAsync("access_token");
+                var userId = httpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-                var jwtReaderDTO = jwtReader.Extract(token!);
+                if (string.IsNullOrWhiteSpace(userId))
+                    return Results.Unauthorized();
 
-                var command = new GetGeneralInfoQuery(jwtReaderDTO.UserId); 
+                var command = new GetGeneralInfoQuery(userId); 
                 
                 var result = await mediator.Send(command);
 
