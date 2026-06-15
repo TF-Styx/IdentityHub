@@ -8,6 +8,9 @@ export interface VerifySRPRequest {
     M1: string
 }
 
+export interface CompleteSRPRequest {
+    tempAuthToken: string;
+}
 //#endregion
 
 
@@ -16,6 +19,6 @@ export interface VerifySRPRequest {
 
 export interface GetSRPResponse { salt: string; b: string }
 
-export interface VerifySRPResponse { m2: string }
+export interface VerifySRPResponse { m2: string; tempAuthToken: string; }
 
 //#endregion

@@ -7,14 +7,13 @@ import { ProfileGeneralInfoResponse, UpdateUserNameRequest } from "../../entitie
 
 export class ProfileApi {
     private httpClient: HttpClient = inject(HttpClient)
-    private baseUrl: string = 'http://127.0.0.1:5077'
 
     getProfileGeneralInfo = (): Observable<ProfileGeneralInfoResponse> =>
-        this.httpClient.get<ProfileGeneralInfoResponse>(`${this.baseUrl}/general-info`, {withCredentials: true});
+        this.httpClient.get<ProfileGeneralInfoResponse>(`/general-info`);
 
     updateUserName = (request: UpdateUserNameRequest) : Observable<void> => 
-        this.httpClient.patch<void>(`${this.baseUrl}/update-name`, request, {withCredentials: true});
+        this.httpClient.patch<void>(`/update-name`, request);
 
     uploadAvatar = (avatar: FormData) : Observable<void> => 
-        this.httpClient.post<void>(`${this.baseUrl}/avatar`, avatar, {withCredentials: true});
+        this.httpClient.post<void>(`/avatar`, avatar);
 }

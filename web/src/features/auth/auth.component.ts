@@ -32,15 +32,13 @@ export class AuthComponent{
         if (this.loginForm.invalid)
             return;
 
-        const {login: login, password: password} = this.loginForm.value
-
-        console.log(`${login}-${password}`);
+        const {login: login, password: password} = this.loginForm.value;
 
         const { salt, b } = await firstValueFrom(this.authApi.getSRPChallenge({ Login: login }));
 
         const srpProof = await this.secureDataService.generateSrpProof(password, salt, b);
 
-        const { m2 } = await firstValueFrom(this.authApi.verifySRPProof({
+        const { m2, tempAuthToken } = await firstValueFrom(this.authApi.verifySRPProof({
           Login: login,
           A: srpProof.A,
           M1: srpProof.M1,
@@ -62,8 +60,9 @@ export class AuthComponent{
             this.errorMessage = "Подлинность сервера не подтверждена!"
             return;
         }
+        const completeSRP = await firstValueFrom(this.authApi.completeSRP({tempAuthToken}));
 
-        alert('Вход успешен!');
+        console.log('Вход успешен!');
         
         this.router.navigate(['/user']);
 

@@ -117,7 +117,7 @@ export class StepResetComponent{
 
         await firstValueFrom(this.stepResetApi.recoveryAccessPassword(recoveryAccessPassword));
 
-        alert('Пароль успешно изменён!');
+        console.log('Пароль успешно изменён!');
 
         this.state.resetState();
         this.router.navigate(['/auth']);

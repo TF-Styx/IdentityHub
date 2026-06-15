@@ -7,11 +7,10 @@ import { Observable } from "rxjs";
 
 export class StepResetApi{
     private httpClient: HttpClient = inject(HttpClient);
-    private baseUrl: string = 'http://127.0.0.1:5077';
     
     getPublicKey = (): Observable<PublicKeyResponse> => 
-        this.httpClient.get<PublicKeyResponse>(`${this.baseUrl}/get-public-key`)
+        this.httpClient.get<PublicKeyResponse>(`/get-public-key`)
 
     recoveryAccessPassword = (data: RecoveryAccessPasswordRequest) =>
-        this.httpClient.patch<void>(`${this.baseUrl}/recovery-access-password`, data);
+        this.httpClient.patch<void>(`/recovery-access-password`, data);
 }
