@@ -1,4 +1,5 @@
 ﻿using IdentityHub.AuthService.Application.Abstracts;
+using IdentityHub.AuthService.Infrastructure.BackgroundServices;
 using IdentityHub.AuthService.Infrastructure.Persistence.Contexts;
 using IdentityHub.AuthService.Infrastructure.Redis;
 using Microsoft.EntityFrameworkCore;
@@ -31,6 +32,8 @@ namespace IdentityHub.AuthService.Infrastructure.Ioc
                 return ConnectionMultiplexer.Connect(config);
             });
             services.AddSingleton<IRedisService, RedisService>();
+
+            services.AddHostedService<ClearingOutdatedTokensService>();
 
             return services;
         }
