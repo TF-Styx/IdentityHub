@@ -2,6 +2,7 @@ using MediatR;
 using Shared.Kernel.Results;
 using Shared.Contracts.Common;
 using IdentityHub.BFF.Services;
+using Shared.Contracts.CacheKeys;
 using IdentityHub.BFF.Clients.Auth;
 using Shared.Contracts.Request.SRP;
 using System.Security.Cryptography;
@@ -39,7 +40,7 @@ namespace IdentityHub.BFF.Features.Auth.SRPVerify
 
             string tempAuthToken = Convert.ToBase64String(tempToken).Replace("+", "-").Replace("/", "_").Replace("=", "");
 
-            var redisResult = await redisService.SetJsonAsync($"srp:temp:{tempAuthToken}", userSession, TimeSpan.FromMinutes(2));
+            var redisResult = await redisService.SetJsonAsync(RedisKeys.SRPTempTokenString(tempAuthToken), userSession, TimeSpan.FromMinutes(2));
 
             if (redisResult.IsFailure)
                 return Result<SRPVerifyProofResponse>.Failure(Error.InternalServer("Произошла ошибка на стороне сервера!"));
