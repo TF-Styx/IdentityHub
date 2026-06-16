@@ -15,5 +15,8 @@ namespace Shared.Contracts.CacheKeys
 
         public static string SRPSessionStateString(string login)
             => $"{TERMINEX}:srp:session-state:{login}";
+
+        public static string LockKeyString(string value)
+            => $"{TERMINEX}:shared:lock:sessions:{value}";
     }
 }

@@ -1,19 +1,18 @@
 using StackExchange.Redis;
 using Shared.Contracts.Common;
 using IdentityHub.BFF.Services;
+using Medallion.Threading.Redis;
+using Shared.Contracts.CacheKeys;
 using IdentityHub.BFF.Clients.Auth;
-using System.Collections.Concurrent;
 using Shared.Contracts.Request.User;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Shared.Contracts.CacheKeys;
+using Medallion.Threading;
 
 namespace IdentityHub.BFF.Extensions.ServiceCollections
 {
     public static class AuthenticationService
     {
-        private static readonly ConcurrentDictionary<string, SemaphoreSlim> _sessionLocks = [];
-
         public static IServiceCollection UseCookie(this IServiceCollection services, IWebHostEnvironment environment)
         {
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -60,29 +59,46 @@ namespace IdentityHub.BFF.Extensions.ServiceCollections
                             return;
                         }
 
-                        var sessionLock = _sessionLocks.GetOrAdd(sessionId, _ => new SemaphoreSlim(1, 1));
-
-                        await sessionLock.WaitAsync();
+                        var sessionKey = RedisKeys.SessionString(sessionId);
+                        var redisService = context.HttpContext.RequestServices.GetRequiredService<RedisService>();
+                        var userSessionResult = await redisService.GetJsonAsync<UserSession>(sessionKey);
                         
-                        try
+                        if (userSessionResult.IsFailure)
                         {
-                            var redisService = context.HttpContext.RequestServices.GetRequiredService<RedisService>();
+                            // Используется для отмены/аннулирования текущей аутентификации пользователя при проверке подлинности на основе cookie
+                            context.RejectPrincipal();
+                            return;
+                        }
 
-                            // Данный ключ нужно писать ВЕЗДЕ ОДИНАКОВО ВО ВСЕХ BFF
-                            var sessionKey = RedisKeys.SessionString(sessionId); 
+                        var userSession = userSessionResult.Value;
 
-                            var userSessionResult = await redisService.GetJsonAsync<UserSession>(sessionKey);
+                        var oneMinute = DateTime.UtcNow.AddMinutes(1);
+                        
+                        if (userSession.AccessTokenExpiresAt <= oneMinute)
+                        {
+                            var lockProvider = context.HttpContext.RequestServices.GetRequiredService<RedisDistributedSynchronizationProvider>();
 
-                            if (userSessionResult.IsFailure)
+                            var lockKey = RedisKeys.LockKeyString(sessionId);
+
+                            await using var handle = await lockProvider.TryAcquireLockAsync(lockKey, TimeSpan.FromSeconds(5));
+
+                            if (handle == null)
                             {
                                 // Используется для отмены/аннулирования текущей аутентификации пользователя при проверке подлинности на основе cookie
                                 context.RejectPrincipal();
                                 return;
                             }
 
-                            var userSession = userSessionResult.Value;
+                            var reGetUserSessionResult = await redisService.GetJsonAsync<UserSession>(sessionKey);
 
-                            var oneMinute = DateTime.UtcNow.AddMinutes(1);
+                            if (reGetUserSessionResult.IsFailure)
+                            {
+                                // Используется для отмены/аннулирования текущей аутентификации пользователя при проверке подлинности на основе cookie
+                                context.RejectPrincipal();
+                                return;
+                            }
+
+                            userSession = reGetUserSessionResult.Value;
 
                             if (userSession.AccessTokenExpiresAt <= oneMinute)
                             {
@@ -106,29 +122,28 @@ namespace IdentityHub.BFF.Extensions.ServiceCollections
                                 }
                                 else
                                 {
-                                    var updatedSession = await redisService.GetJsonAsync<UserSession>(sessionKey);
-
-                                    if (updatedSession != null && updatedSession.Value.AccessTokenExpiresAt > DateTime.UtcNow.AddMinutes(1))
-                                    {
-                                        userSession = updatedSession.Value;
-                                    }
-                                    else
-                                    {
-                                        await redisService.DeleteAsync(sessionKey);
-                                        context.RejectPrincipal();
-                                        return;
-                                    }
+                                    await redisService.DeleteAsync(sessionKey);
+                                    context.RejectPrincipal();
+                                    return;
                                 }
                             }
+                        }
 
-                            context.HttpContext.Items["AccessToken"] = userSession.AccessToken;
-                        }
-                        finally
-                        {
-                            sessionLock.Release();
-                        }
+                        context.HttpContext.Items["AccessToken"] = userSession.AccessToken;
                     };
                 });
+
+            return services;
+        }
+
+        public static IServiceCollection AddDistributedLock(this IServiceCollection services)
+        {
+            services.AddSingleton(serviceProvider =>
+            {
+                var redis = serviceProvider.GetRequiredService<IConnectionMultiplexer>();
+
+                return new RedisDistributedSynchronizationProvider(redis.GetDatabase());
+            });
 
             return services;
         }

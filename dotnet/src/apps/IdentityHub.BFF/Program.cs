@@ -10,6 +10,7 @@ var env = builder.Environment;
 builder.Services.AddOpenApi().AddAuthorization()
     .AddServices(configuration)
     .AddHttpClients(configuration)
+    .AddDistributedLock()
     .UseCors()
     .AddSharedCryptoKeyASPNET(configuration)
     .UseCookie(env);

@@ -5,6 +5,8 @@ using IdentityHub.AuthService.Application.Services;
 using Shared.Security.Abstraction.Encoders;
 using Shared.Security.Abstraction.Hashers;
 using Shared.Security.Cryptography.Hashers;
+using StackExchange.Redis;
+using Medallion.Threading.Redis;
 
 namespace IdentityHub.AuthService.Application.Ioc
 {
@@ -19,6 +21,13 @@ namespace IdentityHub.AuthService.Application.Ioc
             services.AddSingleton<IVerifierProtector, RSADecryptor>();
 
             services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();
+
+            services.AddSingleton(serviceProvider =>
+            {
+                var redis = serviceProvider.GetRequiredService<IConnectionMultiplexer>();
+
+                return new RedisDistributedSynchronizationProvider(redis.GetDatabase());
+            });
 
             return services;
         }
