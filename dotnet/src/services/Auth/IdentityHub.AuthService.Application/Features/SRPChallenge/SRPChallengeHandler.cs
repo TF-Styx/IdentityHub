@@ -1,6 +1,7 @@
 ﻿using IdentityHub.AuthService.Application.Abstracts;
 using IdentityHub.AuthService.Application.Services;
 using MediatR;
+using Shared.Contracts.CacheKeys;
 using Shared.Contracts.Response.SRP;
 using Shared.Kernel.Results;
 using Shared.Security.Abstraction.Encoders;
@@ -54,7 +55,7 @@ namespace IdentityHub.AuthService.Application.Features.SRPChallenge
                     Convert.ToBase64String(B.ToByteArray(isUnsigned: true, isBigEndian: true))
                 );
 
-            await _redisService.SetJsonAsync($"SRP: {request.Login}", sessionState, TimeSpan.FromMinutes(2));
+            await _redisService.SetJsonAsync(RedisKeys.SRPSessionStateString(request.Login), sessionState, TimeSpan.FromMinutes(2));
 
             return Result<SRPChallengeResponse>.Success(new SRPChallengeResponse(user.ClientSalt!, sessionState.ServerPublicKeyB));
         }

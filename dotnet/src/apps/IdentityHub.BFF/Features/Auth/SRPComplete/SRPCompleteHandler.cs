@@ -3,6 +3,7 @@ using Shared.Kernel.Results;
 using Shared.Contracts.Common;
 using IdentityHub.BFF.Services;
 using Shared.Contracts.Response.Auth;
+using Shared.Contracts.CacheKeys;
 
 namespace IdentityHub.BFF.Features.Auth.SRPComplete
 {
@@ -10,7 +11,7 @@ namespace IdentityHub.BFF.Features.Auth.SRPComplete
     {
         public async Task<Result<CompleteSrpAuthResponse>> Handle(SRPCompleteCommand request, CancellationToken cancellationToken)
         {
-            var tempKey = $"srp:temp:{request.TempToken}";
+            var tempKey = RedisKeys.SRPTempTokenString(request.TempToken);
 
             var userSessionResult = await redisService.GetJsonAsync<UserSession>(tempKey);
 
@@ -19,7 +20,7 @@ namespace IdentityHub.BFF.Features.Auth.SRPComplete
 
             var userSession = userSessionResult.Value;
 
-            var redisResult = await redisService.SetJsonAsync<UserSession>($"sessions:{userSession.SessionId}", userSession, TimeSpan.FromDays(30));
+            var redisResult = await redisService.SetJsonAsync<UserSession>(RedisKeys.SessionString(userSession.SessionId), userSession, TimeSpan.FromDays(30));
 
             if (redisResult.IsFailure)
                 return Result<CompleteSrpAuthResponse>.Failure(Error.InternalServer("Произошла непредвиденная ошибка на стороне сервера!"));

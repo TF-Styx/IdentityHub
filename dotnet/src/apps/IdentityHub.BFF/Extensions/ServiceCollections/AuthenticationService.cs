@@ -6,6 +6,7 @@ using System.Collections.Concurrent;
 using Shared.Contracts.Request.User;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Shared.Contracts.CacheKeys;
 
 namespace IdentityHub.BFF.Extensions.ServiceCollections
 {
@@ -68,7 +69,7 @@ namespace IdentityHub.BFF.Extensions.ServiceCollections
                             var redisService = context.HttpContext.RequestServices.GetRequiredService<RedisService>();
 
                             // Данный ключ нужно писать ВЕЗДЕ ОДИНАКОВО ВО ВСЕХ BFF
-                            var sessionKey = $"sessions:{sessionId}"; 
+                            var sessionKey = RedisKeys.SessionString(sessionId); 
 
                             var userSessionResult = await redisService.GetJsonAsync<UserSession>(sessionKey);
 
@@ -137,7 +138,7 @@ namespace IdentityHub.BFF.Extensions.ServiceCollections
             string connectionString = configuration["Redis:ConnectionString"]!;
             var redis = ConnectionMultiplexer.Connect(connectionString);
 
-            services.AddDataProtection().SetApplicationName("Terminex.SharedBff").PersistKeysToStackExchangeRedis(redis, "Terminex-DataProtection-Keys");
+            services.AddDataProtection().SetApplicationName("Terminex.SharedBff").PersistKeysToStackExchangeRedis(redis, RedisKeys.DataProtectionString());
 
             return services;
         }
